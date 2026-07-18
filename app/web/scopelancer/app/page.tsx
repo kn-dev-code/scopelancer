@@ -33,24 +33,24 @@ export default function HomeLayout() {
   }
   return (
     <>
-        <NavBar />
       <div className="bg-[#0A0F13] font-sans dark:bg-black w-full h-screen overflow-hidden">
-        <main className="bg-[#0A0F13] w-full py-32 px-16 dark:bg-black sm:items-start">
-
+      <NavBar />
+      <SideBar/>
+        <main className="bg-[#0A0F13] w-[80%] py-32 px-16 dark:bg-black sm:items-start relative left-[20%] bottom-full border-2 border-[#22272C] h-screen">
             {/* Welcome and small description container */}
-            <div className="flex flex-col justify-between w-[85%] place-self-center relative left-24 bottom-20">
+            <div className="flex flex-col justify-between w-[85%] place-self-center relative left-0 bottom-14">
               {/* Will render later for user's name */}
               <h1 className="text-white text-2xl font-bold">Welcome back, John Doe</h1>
-              <div className="flex flex-row justify-between">
+              <div className="flex flex-row justify-self-center justify-between">
                 <span className="text-[#9199A2] text-sm">Turn your client calls into scope you can defend in writing.</span>
-                <Button className="bg-[#2EA2E6] text-black rounded-lg h-10">
+                <Button className="bg-[#2EA2E6] text-black rounded-lg h-10 hover:bg-[#2EA2E6]/80 hover:cursor-pointer">
                   + New Session
                 </Button>
               </div>
             </div>
 
             {/* User information container */}
-            <div className="grid grid-cols-4 gap-x-3 w-[85%] self-center justify-self-end pt-11 relative bottom-20">
+            <div className="grid grid-cols-4 gap-x-3 w-[95%] self-center justify-self-end pt-11 relative bottom-20">
               {Object.entries(userInformation).map(([key, card]) => (
                 <Card className="bg-[#12161D] border-2 border-[#202327] rounded-2xl" key={key}>
                   <CardHeader>
@@ -75,9 +75,6 @@ export default function HomeLayout() {
 
             </div>
         </main>
-        <div className = "">
-      <SideBar/>
-    </div>
       </div>
     </>
   );

@@ -1,34 +1,36 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { WaypointsIcon, WalletIcon, FolderOpenIcon, LayoutDashboardIcon, SettingsIcon} from 'lucide-react'
 import React from 'react'
 
 const SideBar = () => {
     return (
         <>
-            <div className="border-2 border-[#22272C] bg-[#0C1016] flex flex-col justify-start h-screen w-[20%] p-9">
+            <div className="border-2 border-[#22272C] bg-[#0D1218] flex flex-col justify-between h-screen w-[20%] p-9 relative bottom-[8%]">
+
+                {/* Navigation */}
+                <div className="flex flex-col justify-between gap-y-6">
                 <div className = "flex flex-row items-center gap-x-2">
                     {/* Logo and title */}
                     <Button className="bg-[#2EA2E6]">
+                        <WaypointsIcon color = "black" className="w-4 h-4" />
                     </Button>
-                    <h2 className="text-white">Scopelancer</h2>
+                    <h2 className="text-white font-bold">Scopelancer</h2>
                 </div>
-
-                {/* Navigation */}
-                <div className="flex flex-col justify-start">
-                    <Button className="text-[#9199A2] flex flex-row justify-start">Dashboard</Button>
-                    <Button className="text-[#9199A2] flex flex-row justify-start">Sessions</Button>
-                    <Button className="text-[#9199A2] flex flex-row justify-start">Billing</Button>
-                    <Button className="text-[#9199A2] flex flex-row justify-start">Settings</Button>
+                    <Button className="text-[#9199A2] flex flex-row justify-start active:bg-[#1F2F3E] bg-[#0D1218] hover:cursor-pointer"><LayoutDashboardIcon/>Dashboard</Button>
+                    <Button className="text-[#9199A2] flex flex-row justify-start bg-[#0D1218] active:bg-[#1F2F3E] hover:cursor-pointer"><FolderOpenIcon/>Sessions</Button>
+                    <Button className="text-[#9199A2] flex flex-row justify-start bg-[#0D1218] active:bg-[#1F2F3E] hover:cursor-pointer"><WalletIcon/>Billing</Button>
+                    <Button className="text-[#9199A2] flex flex-row justify-start bg-[#0D1218] active:bg-[#1F2F3E] hover:cursor-pointer"><SettingsIcon/>Settings</Button>
                 </div>
-                <Card className="bg-[#0C1016]">
+                <Card className="bg-[#0C1016] border-2 border-[#202327] w-full">
                     <CardHeader>
-                        <CardTitle className="bg-[#9199A2]">
+                        <CardTitle className=" text-[#9199A2]">
                             Credit Balance
                         </CardTitle>
-                        <CardDescription className="text-white">
+                        <CardDescription className="text-white text-lg font-bold">
                             {/* Will render later for user's credit balance */}  1,800
                         </CardDescription>
-                        <Button className="text-black bg-[#2EA2E6]">
+                        <Button className="text-black bg-[#2EA2E6] hover:cursor-pointer hover:bg-[#2EA2E6]/80">
                             Buy Credits
                         </Button>
                     </CardHeader>
