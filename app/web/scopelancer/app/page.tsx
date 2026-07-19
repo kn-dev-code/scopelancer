@@ -6,30 +6,35 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/ca
 import { ActivityIcon, CheckIcon, CoinsIcon, FileIcon, ShieldCheckIcon, XIcon} from "lucide-react";
 import {Spinner} from "@/components/ui/spinner";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
 
 export default function HomeLayout() {
   const userInformation = {
     sessionCard: {
       title: "Total Sessions",
       icon: <FileIcon />,
+      link: "/sessions",
      /* Will render later for user's total sessions */ value: 0,
       message: "Across all clients"
     },
     activeSessionsCard: {
       title: "Active runs",
       icon: <ActivityIcon />,
+      link: "/sessions/active",
       value: 0, /* Will render later for user's active runs */
       message: "Currently processing"
     },
     completedSessionsCard: {
       title: "Completed",
       icon: <ShieldCheckIcon />,
+      link: "/sessions/completed",
       value: 0, /* Will render later for user's completed sessions */
       message: "Scope documented"
     },
     creditBalanceCard: {
       title: "Credits",
       icon: <CoinsIcon />,
+      link: "/billing",
       value: 0, /* Will render later for user's credit balance */
       message: "Available balance"
     }
@@ -81,7 +86,8 @@ export default function HomeLayout() {
           {/* User information container */}
           <div className="grid grid-cols-4 gap-x-3 w-[95%] self-center justify-self-end pt-11 relative bottom-20">
             {Object.entries(userInformation).map(([key, card]) => (
-              <Card className="bg-[#12161D] border-2 border-[#202327] rounded-2xl" key={key}>
+              <Link href = {card.link}>
+              <Card className="bg-[#12161D] border-2 border-[#202327] rounded-2xl hover:border-2 hover:border-[#2E9EE0] hover:cursor-pointer hover:transition hover:duration-500 hover:ease-in-out" key={key}>
                 <CardHeader>
                   <div className="flex flex-row justify-between">
                     <CardTitle className="text-[#9199A2] text-md">{card.title}</CardTitle>
@@ -91,6 +97,7 @@ export default function HomeLayout() {
                   <CardDescription className="text-[#9199A2]">{card.message}</CardDescription>
                 </CardHeader>
               </Card>
+              </Link>
             ))}
           </div>
 
@@ -103,15 +110,15 @@ export default function HomeLayout() {
               <span className = "text-[#9199A2] text-lg">0 total</span>
             </div>
             <div>
-            <Card className="bg-[#12161D] border-2 border-[#202327] rounded-2xl w-[25%] h-48">
+            <Card className="bg-[#12161D] border-2 border-[#202327] rounded-2xl w-[25%] h-48 hover:border-2 hover:border-[#2E9EE0] hover:cursor-pointer hover:transition hover:duration-500 hover:ease-in-out">
                 <CardHeader>
                   <div className="flex flex-row justify-between">
                     <CardTitle className="text-[#9199A2] text-md"><Spinner/></CardTitle> {/* Company Name */}
-                    <CardTitle className = ""><Skeleton/></CardTitle> {/* Session Title */}
-                    <Button className = "rounded-lg"><Skeleton/></Button> {/* Session Status */}
+                    <CardTitle className = ""><Skeleton className = "w-24"/></CardTitle> {/* Session Title */}
+                    <Button className = "rounded-lg"><Skeleton className = "w-24"/></Button> {/* Session Status */}
                   </div>
-                  <CardDescription className="text-white text-xl"><Skeleton/></CardDescription>
-                  <CardDescription className="text-[#9199A2]"><Skeleton/></CardDescription>
+                  <CardDescription className="text-white text-xl"><Skeleton className = "w-24"/></CardDescription>
+                  <CardDescription className="text-[#9199A2]"><Skeleton className = "w-24"/></CardDescription>
                 </CardHeader>
               </Card>
             </div>

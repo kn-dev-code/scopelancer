@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { WaypointsIcon, WalletIcon, FolderOpenIcon, LayoutDashboardIcon, SettingsIcon} from 'lucide-react'
 import React from 'react'
-
+import Link from "next/link"
 const SideBar = () => {
     return (
         <>
@@ -17,10 +17,10 @@ const SideBar = () => {
                     </Button>
                     <h2 className="text-white font-bold">Scopelancer</h2>
                 </div>
-                    <Button className="text-[#9199A2] flex flex-row justify-start active:bg-[#1F2F3E] bg-[#0D1218] hover:cursor-pointer"><LayoutDashboardIcon/>Dashboard</Button>
-                    <Button className="text-[#9199A2] flex flex-row justify-start bg-[#0D1218] active:bg-[#1F2F3E] hover:cursor-pointer"><FolderOpenIcon/>Sessions</Button>
-                    <Button className="text-[#9199A2] flex flex-row justify-start bg-[#0D1218] active:bg-[#1F2F3E] hover:cursor-pointer"><WalletIcon/>Billing</Button>
-                    <Button className="text-[#9199A2] flex flex-row justify-start bg-[#0D1218] active:bg-[#1F2F3E] hover:cursor-pointer"><SettingsIcon/>Settings</Button>
+                    <Link className = "hover:transition hover:duration-500 hover:ease-in-out hover:rounded-2xl w-full active:bg-[#1F2F3E] bg-[#0D1218] hover:cursor-pointer"href = "/"><Button className="text-[#9199A2] flex flex-row justify-start active:bg-[#1F2F3E] bg-[#0D1218] hover:cursor-pointer"><LayoutDashboardIcon/>Dashboard</Button></Link>
+                    <Link className = "hover:transition hover:duration-500 hover:ease-in-out hover:rounded-2xl w-full active:bg-[#1F2F3E] bg-[#0D1218] hover:cursor-pointer" href = "/sessions"><Button className="text-[#9199A2] flex flex-row justify-start bg-[#0D1218] active:bg-[#1F2F3E] hover:cursor-pointer"><FolderOpenIcon/>Sessions</Button></Link>
+                    <Link className = "hover:transition hover:duration-500 hover:ease-in-out hover:rounded-2xl w-full active:bg-[#1F2F3E] bg-[#0D1218] hover:cursor-pointer" href = "/billing"><Button className="text-[#9199A2] flex flex-row justify-start bg-[#0D1218] active:bg-[#1F2F3E] hover:cursor-pointer"><WalletIcon/>Billing</Button></Link>
+                    <Link className = "hover:transition hover:duration-500 hover:ease-in-out hover:rounded-2xl w-full active:bg-[#1F2F3E] bg-[#0D1218] hover:cursor-pointer" href = "/settings"><Button className="text-[#9199A2] flex flex-row justify-start bg-[#0D1218] active:bg-[#1F2F3E] hover:cursor-pointer"><SettingsIcon/>Settings</Button></Link>
                 </div>
                 <Card className="bg-[#0C1016] border-2 border-[#202327] w-full">
                     <CardHeader>
