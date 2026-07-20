@@ -34,7 +34,7 @@ export default function HomeLayout() {
     creditBalanceCard: {
       title: "Credits",
       icon: <CoinsIcon />,
-      link: "/billing",
+      link: "/billings",
       value: 0, /* Will render later for user's credit balance */
       message: "Available balance"
     }

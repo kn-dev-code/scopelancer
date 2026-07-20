@@ -1,11 +1,11 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Link } from 'lucide-react'
 import NavBar from '../pages/navbar'
 import { Spinner } from '@/components/ui/spinner'
 import { Skeleton } from '@/components/ui/skeleton'
 import SideBar from '../pages/sidebar'
+import Link from 'next/link'
 
 const Session = () => {
     return (
@@ -27,10 +27,6 @@ const Session = () => {
                     </div>
                 </div>
               </div>
-    
-              {/* User information container */}
-             
-    
               {/* Recent sessions container */}
               <div>
                 {/* Header display for recent sessions and the count */}
