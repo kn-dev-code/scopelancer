@@ -3,6 +3,7 @@ import NavBar from "../pages/navbar"
 import SideBar from "../pages/sidebar"
 import { CoinsIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 const Billing = () => {
 
@@ -89,17 +90,21 @@ const Billing = () => {
                                             <p className="text-2xl font-bold">{pack.price}</p>
                                         </div>
 
-                                        <Button className={`mt-6 w-full rounded-lg font-medium transition-colors ${isPopular
+                                       <Link href = "/stripe-checkout"><Button className={`mt-6 w-full rounded-lg font-medium transition-colors ${isPopular
                                             ? "bg-[#0090FF] hover:bg-[#0077D6] text-white"
                                             : "bg-[#0A0E13] hover:bg-[#181F26] border border-[#262B30] text-white"
                                             }`}>
                                             Buy pack
                                         </Button>
+                                        </Link>
                                     </Card>
                                 );
                             })}
                         </div>
                     </div>
+
+                    {/* Transaction History Section */}
+
 
                 </main>
             </div>

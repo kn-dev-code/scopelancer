@@ -1,6 +1,6 @@
 import Image from "next/image";
-import NavBar from "./pages/navbar";
-import SideBar from "./pages/sidebar";
+import NavBar from "./(routes)/pages/navbar";
+import SideBar from "./(routes)/pages/sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ActivityIcon, CheckIcon, CoinsIcon, FileIcon, ShieldCheckIcon, XIcon} from "lucide-react";
