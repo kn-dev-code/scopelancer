@@ -91,20 +91,20 @@ export default function HomeLayout() {
   }
   return (
     <>
-      <div className="bg-[#060D1A] font-sans dark:bg-black w-full h-screen overflow-y-scroll">
+      <div className="bg-[#060D1A] font-sans dark:bg-black w-full">
 
 
         {/* Navigation bar */}
         <nav className="flex flex-row justify-between text-center items-center bg-[#060D1A] h-16 max-w-full mx-auto px-[12%]">
           <h2 className="text-white font-bold text-2xl flex flex-row items-center gap-x-2"><WaypointsIcon />Scopelancer</h2>
           <div className="flex flex-row gap-4 items-center">
-            <Link href = "#how-it-works"><span className="text-[#89929E] hover:text-white transition-all duration-300">How it works</span></Link>
-            <Link href = "#features"><span className="text-[#89929E] hover:text-white transition-all duration-300">Features</span></Link>
-            <Link href = "#pricing"><span className="text-[#89929E] hover:text-white transition-all duration-300">Pricing</span></Link>
+            <Link href="#how-it-works"><span className="text-[#89929E] hover:text-white transition-all duration-300">How it works</span></Link>
+            <Link href="#features"><span className="text-[#89929E] hover:text-white transition-all duration-300">Features</span></Link>
+            <Link href="#pricing"><span className="text-[#89929E] hover:text-white transition-all duration-300">Pricing</span></Link>
           </div>
           <div className="flex flex-row gap-x-4 text-center items-center">
-            <Link href = "/auth/signin"><h2 className="text-[#89929E] text-sm font-semibold hover:text-white transition-all duration-300">Sign in</h2></Link>
-            <Link href = "/auth/signup"><Button className="bg-[#00B2F9] text-black h-10 hover:bg-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer">Get started</Button></Link>
+            <Link href="/auth/sign-in"><h2 className="text-[#89929E] text-sm font-semibold hover:text-white transition-all duration-300">Sign in</h2></Link>
+            <Link href="/auth/sign-up"><Button className="bg-[#00B2F9] text-black h-10 hover:bg-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer">Get started</Button></Link>
           </div>
         </nav>
 
@@ -118,9 +118,9 @@ export default function HomeLayout() {
           <p className="text-[#89929E] w-[45%]">Upload a client kickoff call. Scopelancer transcribes it, extracts the real project scope and deadlines, diagrams it, and drafts a strategic follow-up sequence in your own tone.</p>
           {/* Buttons */}
           <div className="flex flex-row gap-x-2 text-center justify-center self-center">
-            <Button className="bg-[#00B2F9] h-10 w-[60%] text-black hover:bg-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer">
+            <Link className = "bg-[#00B2F9] h-10 w-[60%] text-black hover:bg-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer rounded-2xl" href="/auth/sign-up"><Button className="bg-[#00B2F9] h-10 w-[60%] text-black hover:bg-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer">
               Start a session →
-            </Button>
+            </Button></Link>
             <Button className="bg-[#0A1423] h-10 w-[55%] text-white hover:bg-[#0A1423]/80 transition-all duration-300 hover:cursor-pointer">
               See how it works
             </Button>
@@ -130,7 +130,7 @@ export default function HomeLayout() {
           <Image className="border-4 border-[#1d2028] rounded-2xl shadow-xl shadow-[#082B44] ring-[#082B44]" width={1000} height={1000} style={{ objectFit: "contain" }} src={dashboardPic} alt="picture of dashboard" />
         </main>
         {/* More information & features */}
-        <section id = "how-it-works"className="py-20 border-2 border-[#121825]">
+        <section id="how-it-works" className="py-20 border-2 border-[#121825]">
           <div className="flex flex-col justify-center pl-10 pb-10">
             <h1 className="text-white text-4xl font-bold w-[50%] tracking-normal">From an hour-long call to defensible artifact</h1>
             <p className="text-[#89929E] w-[50%]">Four deterministic stages. Each one streams back into your dashboard as it completes.</p>
@@ -153,7 +153,7 @@ export default function HomeLayout() {
         </section>
 
         {/* More critical information */}
-        <section id = "features"className="border-2 border-[#121825] py-20">
+        <section id="features" className="border-2 border-[#121825] py-20">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 place-items-center w-full">
             {Object.entries(benefits).map(([key, benefit]) => (
               <Card className="w-[75%] bg-[#0A1423] h-48.75% border-2 border-[#1F2535]" key={key}>
@@ -172,7 +172,7 @@ export default function HomeLayout() {
         </section>
 
         {/* Billing Information */}
-        <section id = "pricing" className="border-2 border-[#121825] py-16">
+        <section id="pricing" className="border-2 border-[#121825] py-16">
           <div className="pl-14 py-10">
             <h1 className="text-white text-4xl font-bold tracking-normal w-[50%]">Prepaid credits. No subscriptions.</h1>
             <p className="text-[#89929E] w-[50%]">Each run is metered against real usage — audio minutes and tokens. Unused holds are refunded.</p>
@@ -214,17 +214,17 @@ export default function HomeLayout() {
           <div className="flex flex-col items-center self-center text-center gap-y-4">
             <h1 className="text-white text-4xl font-bold tracking-normal">Stop rewriting scope from memory.</h1>
             <p className="text-[#89929E] w-[40%]">Turn your next client call into a documented, diagrammed, and defended scope in minutes.</p>
-            <Button className="bg-[#00B2F9] text-black h-11 w-[15%] hover:bg-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer">Start your first session →</Button>
+            <Link className="bg-[#00B2F9] text-black h-11 w-[15%] transition-all duration-300 hover:cursor-pointer rounded-2xl" href="/auth/sign-up"><Button className="bg-[#00B2F9] text-black h-11 w-[15%] hover:bg-[#00B2F9]/80 transition-all duration-300 rounded-2xl hover:cursor-pointer">Start your first session →</Button></Link>
           </div>
         </section>
 
         {/* Footer */}
         <footer className="border-2 border-[#121825] py-20">
           <div className="flex flex-row items-center justify-between w-full px-[12%]">
-            <div className = "flex flex-row items-center gap-x-2">
-            <WaypointsIcon color = "white" />
-            <h2 className="text-white text-md font-bold">Scopelancer</h2>
-              </div>
+            <div className="flex flex-row items-center gap-x-2">
+              <WaypointsIcon color="white" />
+              <h2 className="text-white text-md font-bold">Scopelancer</h2>
+            </div>
             <span className="text-[#89929E] text-sm">© 2026 Scopelancer. All rights reserved.</span>
           </div>
         </footer>
