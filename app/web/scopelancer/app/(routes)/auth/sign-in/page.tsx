@@ -51,7 +51,7 @@ const SignIn = () => {
         <WaypointsIcon className = "text-white text-2xl" />
         <Link className="text-white text-2xl" href="/">Scopelancer</Link>
       </div>
-      <main className="w-full flex flex-col items-center justify-center">
+      <main className="w-full flex flex-col items-center justify-center pt-3">
         {/* Sign in container */}
         <div className="flex flex-col self-center bg-[#0D1726] border-2 border-[#202A38] w-[30%] p-7 rounded-2xl">
           <h2 className="text-2xl font-bold text-white">Welcome back</h2>
