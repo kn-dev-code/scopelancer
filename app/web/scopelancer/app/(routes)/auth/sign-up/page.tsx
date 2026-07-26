@@ -3,7 +3,6 @@ import {Field, FieldLabel, FieldError, FieldDescription,FieldSet, FieldGroup } f
 import { Input } from '@/components/ui/input'
 import { WaypointsIcon, Link } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import React from 'react'
 import {z} from "zod";
 import { client } from '@/lib/betterauth/client'
 const SignUp = () => {
@@ -22,14 +21,20 @@ const SignUp = () => {
 
   const handleSignUp = async(provider: "google" | "github") => {
     try {
-      await client.signUp.social({
+      await client.signIn.social({
         provider,
-        callBackURL: "/"
+        callbackURL: "/"
       })
     } catch(error) {
       console.error(error);
     }
   }
+
+  const onSubmit = async(data: z.infer<typeof formSchema>) => {
+
+  }
+
+  
   return (
     <div className="bg-[#060D1A] dark:bg-[#060D1A] h-screen w-screen">
 
@@ -45,7 +50,7 @@ const SignUp = () => {
           <Button className="bg-[#0E1727] border-2 border-[#202A38] text-white transition-all duration-300 hover:cursor-pointer font-semibold h-11 mt-4 hover:bg-[#00B2F9] hover:scale-95" onClick={() => handleSignUp("google")}>Continue with Google</Button>
           <Button className="bg-[#0E1727] border-2 border-[#202A38] text-white transition-all duration-300 hover:cursor-pointer font-semibold h-11 mt-4 hover:bg-[#00B2F9] hover:scale-95" onClick={() => handleSignUp("github")}>Continue with GitHub</Button>
           <span className="text-[#89929E] text-sm mt-4 text-center">or</span>
-          <form onSubmit={form.handleSubmit(handleSignUp)}>
+          <form onSubmit={form.handleSubmit()}>
             <FieldSet>
               <FieldGroup className="flex flex-col text-center">
                 <Field>
