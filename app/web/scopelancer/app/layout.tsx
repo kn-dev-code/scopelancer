@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Providers from "@/app/tanstack/providers";
+import { Toaster } from "@/components/ui/toast";
 
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
@@ -34,7 +35,7 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full scroll-smooth", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
     >
-      <body className="min-h-full flex flex-col"><Providers>{children}</Providers></body>
+      <body className="min-h-full flex flex-col"><Providers>{children}</Providers><Toaster/></body>
     </html>
   );
 }

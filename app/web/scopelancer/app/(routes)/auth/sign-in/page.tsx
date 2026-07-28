@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
+import { useGetUser } from '@/hooks/use-auth'
 const SignIn = () => {
 
 
@@ -42,11 +43,13 @@ const SignIn = () => {
       await client.signIn.social({
         provider,
         callbackURL: "/",
-      })
+      }) && await useGetUser()
     } catch (error) {
       console.error(error);
     }
   }
+
+  
 
  
   return (
