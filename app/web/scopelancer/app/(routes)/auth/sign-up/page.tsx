@@ -1,45 +1,62 @@
+"use client"
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import {Field, FieldLabel, FieldError, FieldDescription,FieldSet, FieldGroup } from '@/components/ui/field'
+import { Field, FieldLabel, FieldError, FieldDescription, FieldSet, FieldGroup } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { WaypointsIcon, Link } from 'lucide-react'
-import { useForm } from 'react-hook-form'
-import {z} from "zod";
+import { WaypointsIcon} from 'lucide-react'
+import { z } from "zod";
 import { client } from '@/lib/betterauth/client'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 const SignUp = () => {
 
   const formSchema = z.object({
+    name: z.string().min(1, "Name must be at least one character"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(8, "Password must be at least 8 characters long"),
   })
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  type registerUser = z.infer<typeof formSchema>;
+
+  const form = useForm<registerUser>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
     }
   })
 
-  const handleSignUp = async(provider: "google" | "github") => {
+  const handleSignUp = async (provider: "google" | "github") => {
     try {
       await client.signIn.social({
         provider,
-        callbackURL: "/"
+        callbackURL: "/dashboard"
       })
-    } catch(error) {
+    } catch (error) {
       console.error(error);
     }
   }
 
-  const onSubmit = async(data: z.infer<typeof formSchema>) => {
-
+  const onSubmit = async (data: registerUser) => {
+    try {
+      await client.signUp.email({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        callbackURL: "/dashboard",
+      })
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  
+
   return (
-    <div className="bg-[#060D1A] dark:bg-[#060D1A] h-screen w-screen">
+    <div className="bg-[#060D1A] dark:bg-[#060D1A] h-screen w-screen overflow-hidden">
 
       <div className="flex flex-row items-center justify-center pr-[20%] pt-12 gap-x-2 rounded-xl">
-        <WaypointsIcon className = "text-white text-2xl" />
+        <WaypointsIcon className="text-white text-2xl" />
         <Link className="text-white text-2xl" href="/">Scopelancer</Link>
       </div>
       <main className="w-full flex flex-col items-center justify-center pt-3">
@@ -50,19 +67,24 @@ const SignUp = () => {
           <Button className="bg-[#0E1727] border-2 border-[#202A38] text-white transition-all duration-300 hover:cursor-pointer font-semibold h-11 mt-4 hover:bg-[#00B2F9] hover:scale-95" onClick={() => handleSignUp("google")}>Continue with Google</Button>
           <Button className="bg-[#0E1727] border-2 border-[#202A38] text-white transition-all duration-300 hover:cursor-pointer font-semibold h-11 mt-4 hover:bg-[#00B2F9] hover:scale-95" onClick={() => handleSignUp("github")}>Continue with GitHub</Button>
           <span className="text-[#89929E] text-sm mt-4 text-center">or</span>
-          <form onSubmit={form.handleSubmit()}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <FieldSet>
               <FieldGroup className="flex flex-col text-center">
-                <Field>
+                <Field className = "relative">
+                  <FieldLabel className="text-[#89929E]">Name</FieldLabel>
+                  <Input className="bg-[#09101E] border-2 border-[#202A38] rounded-md placeholder:font-bold h-11 text-white" placeholder="John Doe" id="email" {...form.register("email")} />
+                  <FieldError className = "absolute pt-20">{form.formState.errors.name?.message}</FieldError>
+                </Field>
+                <Field className = "relative">
                   <FieldLabel className="text-[#89929E]">Email</FieldLabel>
                   <Input className="bg-[#09101E] border-2 border-[#202A38] rounded-md placeholder:font-bold h-11 text-white" placeholder="you@studio.com" id="email" {...form.register("email")} />
-                  <FieldError>{form.formState.errors.email?.message}</FieldError>
+                  <FieldError className = "absolute pt-20">{form.formState.errors.email?.message}</FieldError>
                 </Field>
 
-                <Field>
+                <Field className = "relative">
                   <FieldLabel className="text-[#89929E]">Password</FieldLabel>
                   <Input className="bg-[#09101E] border-2 border-[#202A38] rounded-md placeholder:text-2xl h-11 text-white" placeholder="........" id="password" {...form.register("password")} />
-                  <FieldError>{form.formState.errors.password?.message}</FieldError>
+                  <FieldError className = "absolute pt-20">{form.formState.errors.password?.message}</FieldError>
                 </Field>
 
                 <FieldDescription>
@@ -73,8 +95,8 @@ const SignUp = () => {
             </FieldSet>
           </form>
           <div className="flex flex-row gap-x-2 text-sm text-center justify-center mt-4">
-            <span className="text-[#89929E]">New to Scopelancer?</span>
-            <Link className="text-[#00B2F9] hover:text-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer" href="/auth/signup">Create an account</Link>
+            <span className="text-[#89929E]">Already have an account?</span>
+            <Link className="text-[#00B2F9] hover:text-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer" href="/auth/sign-in">Sign In</Link>
           </div>
         </div>
       </main>

@@ -121,9 +121,11 @@ export default function HomeLayout() {
             <Link className = "bg-[#00B2F9] h-10 w-[60%] text-black hover:bg-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer rounded-2xl" href="/auth/sign-up"><Button className="bg-[#00B2F9] h-10 w-[60%] text-black hover:bg-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer">
               Start a session →
             </Button></Link>
+            <Link className = "bg-[#0A1423] w-[55%] rounded-2xl hover:cursor-pointer" href= "#how-it-works">
             <Button className="bg-[#0A1423] h-10 w-[55%] text-white hover:bg-[#0A1423]/80 transition-all duration-300 hover:cursor-pointer">
               See how it works
             </Button>
+            </Link>
           </div>
 
           {/* Dashboard picture */}

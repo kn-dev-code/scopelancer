@@ -27,14 +27,17 @@ const SignIn = () => {
     password: z.string().min(8, "Password must be at least 8 characters long"),
   })
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  type LoginUser = z.infer<typeof formSchema>;
+
+  const form = useForm<LoginUser>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
-    }
+      }
   })
 
-  const handleSignIn = async (provider: "google" | "github") => {
+  const externalSignIn = async (provider: "google" | "github") => {
     try {
       await client.signIn.social({
         provider,
@@ -44,6 +47,8 @@ const SignIn = () => {
       console.error(error);
     }
   }
+
+ 
   return (
     <div className="bg-[#060D1A] dark:bg-[#060D1A] h-screen w-screen">
 
@@ -75,7 +80,7 @@ const SignIn = () => {
                 </Field>
 
                 <FieldDescription>
-                  <Link href="/auth/forgot-passsword">Forgot password?</Link>
+                  <Link className = "text-[#89929E] hover:text-white" href="/auth/forgot-passsword">Forgot password?</Link>
                 </FieldDescription>
                 <Button className="bg-[#00B2F9] text-black hover:bg-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer h-10" type="submit">Sign in →</Button>
               </FieldGroup>
@@ -83,7 +88,7 @@ const SignIn = () => {
           </form>
           <div className="flex flex-row gap-x-2 text-sm text-center justify-center mt-4">
             <span className="text-[#89929E]">New to Scopelancer?</span>
-            <Link className="text-[#00B2F9] hover:text-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer" href="/auth/signup">Create an account</Link>
+            <Link className="text-[#00B2F9] hover:text-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer" href="/auth/sign-up">Create an account</Link>
           </div>
         </div>
       </main>
