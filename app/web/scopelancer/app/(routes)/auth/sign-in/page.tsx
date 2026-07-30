@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
-import { useGetUser } from '@/hooks/use-auth'
 const SignIn = () => {
 
 
@@ -38,12 +37,12 @@ const SignIn = () => {
       }
   })
 
-  const externalSignIn = async (provider: "google" | "github") => {
+  const handleSignIn = async (provider: "google" | "github") => {
     try {
       await client.signIn.social({
         provider,
         callbackURL: "/",
-      }) && await useGetUser()
+      })
     } catch (error) {
       console.error(error);
     }

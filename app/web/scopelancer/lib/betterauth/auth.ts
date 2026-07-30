@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma"
 import { PrismaClient } from "../generated/client"
 
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
 export const auth = betterAuth({
     baseURL: process.env.BETTER_AUTH_URL!,
