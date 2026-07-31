@@ -26,6 +26,14 @@ export async function GET(request: NextRequest) {
                 createdAt: true,
             }
         })
+
+        if (!user) {
+            return NextResponse.json({error: "User not found."}, {status: HTTP_STATUS.NOT_FOUND});
+        }
+        
+        return NextResponse.json({success: true, user: user}, {status: HTTP_STATUS.OK});
+
+
         
     } catch (e) {
         return NextResponse.json({
