@@ -31,11 +31,12 @@ export const auth = betterAuth({
             clientSecret: process.env.GITHUB_CLIENT_SECRET!,
         }
     },
-    users: {
+    user: {
         additionalFields: {
             role: {
                 type: "string",
-                input: false
+                required: false,
+                input: false,
             }
         }
     }
