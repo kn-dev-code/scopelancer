@@ -19,8 +19,10 @@ import {
 } from "@/components/ui/field"
 import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
+import { createAuthClient } from 'better-auth/client'
 const SignIn = () => {
 
+  const authClient = createAuthClient();
 
   const formSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -39,7 +41,7 @@ const SignIn = () => {
 
   const handleSignIn = async (provider: "google" | "github") => {
     try {
-      await client.signIn.social({
+      await authClient.signIn.social({
         provider,
         callbackURL: "/",
       })

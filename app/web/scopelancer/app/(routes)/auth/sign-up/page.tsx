@@ -8,7 +8,10 @@ import { z } from "zod";
 import { client } from '@/lib/betterauth/client'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { createAuthClient } from 'better-auth/client'
 const SignUp = () => {
+
+  const authClient = createAuthClient();
 
   const formSchema = z.object({
     name: z.string().min(1, "Name must be at least one character"),
@@ -29,18 +32,18 @@ const SignUp = () => {
 
   const handleSignUp = async (provider: "google" | "github") => {
     try {
-      await client.signIn.social({
+      await authClient.signIn.social({
         provider,
         callbackURL: "/dashboard"
       })
     } catch (error) {
-      console.error(error);
+      console.error(`API ERROR: ${error}`);
     }
   }
 
   const onSubmit = async (data: registerUser) => {
     try {
-      await client.signUp.email({
+      await authClient.signUp.email({
         name: data.name,
         email: data.email,
         password: data.password,
