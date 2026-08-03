@@ -3,13 +3,11 @@
 /// Generator Runner
 generator client {
   provider = "prisma-client-js"
-  output   = "../lib/generated/client"
 }
 
 /// Database connection
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
 }
 
 /// User model - Configured for Better Auth + App Customizations

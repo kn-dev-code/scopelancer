@@ -5,7 +5,6 @@ import { Field, FieldLabel, FieldError, FieldDescription, FieldSet, FieldGroup }
 import { Input } from '@/components/ui/input'
 import { WaypointsIcon} from 'lucide-react'
 import { z } from "zod";
-import { client } from '@/lib/betterauth/client'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createAuthClient } from 'better-auth/client'
