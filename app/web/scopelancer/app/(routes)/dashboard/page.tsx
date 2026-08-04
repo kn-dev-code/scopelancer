@@ -9,6 +9,7 @@ import Link from "next/link";
 import NavBar from "../pages/navbar";
 import SideBar from "../pages/sidebar";
 import { client } from "@/lib/betterauth/client";
+// Dashboard not working to query user's credentials
 const Dashboard = () => {
   const {data, isPending, error, refetch} = client.useSession();
 

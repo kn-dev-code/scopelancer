@@ -3,6 +3,7 @@ import { CoinsIcon } from 'lucide-react'
 import Link from 'next/link'
 import { client } from '@/lib/betterauth/client'
 
+// See why Nav bar is not redirecting
 const NavBar = () => {
   const { data } = client.useSession();
   const firstInitial = data?.user?.name[0];
