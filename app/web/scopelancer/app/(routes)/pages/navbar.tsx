@@ -3,25 +3,28 @@ import { Button } from '@/components/ui/button'
 import { CoinsIcon } from 'lucide-react'
 import Link from 'next/link'
 import { client } from '@/lib/betterauth/client'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from '@/components/ui/toast'
 // See why Nav bar is not redirecting
 const NavBar = () => {
+  const router = useRouter();
   const { data } = client.useSession();
   const firstInitial = data?.user?.name[0];
   const secondInitial = data?.user?.email[0];
   const userInitials = `${firstInitial}${secondInitial}`.toUpperCase();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
-  const [closePanel, setClosePanel] = useState(false);
-  const [showWarningMessage, setShowWarningMessage] = useState(false);
 
   const signOut = async () => {
     await client.signOut({
       fetchOptions: {
         onSuccess: () => {
-          setIsLoggingOut(true);
-          redirect("/");
+          toast.add({
+            type: "success",
+            title: "Logout successfully!",
+            description: "You will be redirected...",
+          })
+          router.push("/");
         }
       }
     })
@@ -39,7 +42,7 @@ const NavBar = () => {
           <div className = "flex flex-row gap-x-6 rounded-sm items-center justify-center w-[35%]">
             <Button className = "bg-[#112431] hover:bg-[#112431]/80 rounded-md border-2 border-[#aaabac] hover:scale-105"><Link className = "text-[#2EA2E6]" href = "/profile">Profile</Link></Button>
             <Button className = "bg-[#112431] hover:bg-[#112431]/80 rounded-md border-2 border-[#aaabac] hover:scale-105"><Link className = "text-[#2EA2E6]" href = "/plan">User Plan</Link></Button>
-            <Button className = "bg-[#112431] hover:bg-[#112431]/80 rounded-md border-2 border-[#aaabac] hover:scale-105"><Link className = "text-[#2EA2E6]" onClick = {() => {setShowWarningMessage(true)}} href = "/logout">Logout</Link></Button>
+            <Button onClick = {signOut} className = "bg-[#112431] hover:bg-[#112431]/80 rounded-md border-2 border-[#aaabac] hover:scale-105 hover:cursor-pointer text-[#2EA2E6]">Logout</Button>
             <Button onClick = {() => {setShowPanel(false)}} className = "bg-[#112431] rounded-md border-2 border-[#aaabac] text-[#2EA2E6] hover:scale-105 hover:bg-[#112431]/80 hover:cursor-pointer">Cancel</Button>
             </div>
         ) : (
