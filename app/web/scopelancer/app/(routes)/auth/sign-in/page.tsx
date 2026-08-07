@@ -43,7 +43,7 @@ const SignIn = () => {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: "/",
+        callbackURL: "http://localhost:3000/dashboard",
       })
     } catch (error) {
       console.error(error);

@@ -33,7 +33,7 @@ const SignUp = () => {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: "/dashboard"
+        callbackURL: "http://localhost:3000/dashboard"
       })
     } catch (error) {
       console.error(`API ERROR: ${error}`);
@@ -46,7 +46,7 @@ const SignUp = () => {
         name: data.name,
         email: data.email,
         password: data.password,
-        callbackURL: "/dashboard",
+        callbackURL: "http://localhost:3000/dashboard",
       })
     } catch (error) {
       console.error(error);

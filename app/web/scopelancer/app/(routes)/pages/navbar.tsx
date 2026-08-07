@@ -36,14 +36,14 @@ const NavBar = () => {
           </Button>
         </Link>
         {showPanel ? (
-          <div className = "flex flex-row gap-y-3 border-[#aaabac] border-2 rounded-sm bg-[#12161D]">
-            <Link className = "text-white" href = "/profile">Profile</Link>
-            <Link className = "text-white" href = "/plan">User Plan</Link>
-            <Link className = "text-white" onClick = {() => {setShowWarningMessage(true)}} href = "/logout">Logout</Link>
-            <Button onClick = {() => {setShowPanel(false)}} className = "bg-[#112431] rounded-full text-[#2EA2E6]">Cancel</Button>
+          <div className = "flex flex-row gap-x-6 rounded-sm items-center justify-center w-[35%]">
+            <Button className = "bg-[#112431] hover:bg-[#112431]/80 rounded-md border-2 border-[#aaabac] hover:scale-105"><Link className = "text-[#2EA2E6]" href = "/profile">Profile</Link></Button>
+            <Button className = "bg-[#112431] hover:bg-[#112431]/80 rounded-md border-2 border-[#aaabac] hover:scale-105"><Link className = "text-[#2EA2E6]" href = "/plan">User Plan</Link></Button>
+            <Button className = "bg-[#112431] hover:bg-[#112431]/80 rounded-md border-2 border-[#aaabac] hover:scale-105"><Link className = "text-[#2EA2E6]" onClick = {() => {setShowWarningMessage(true)}} href = "/logout">Logout</Link></Button>
+            <Button onClick = {() => {setShowPanel(false)}} className = "bg-[#112431] rounded-md border-2 border-[#aaabac] text-[#2EA2E6] hover:scale-105 hover:bg-[#112431]/80 hover:cursor-pointer">Cancel</Button>
             </div>
         ) : (
-          <Button onClick= {() => {setShowPanel(true)}} className="bg-[#112431] rounded-full text-[#2EA2E6]">
+          <Button onClick= {() => {setShowPanel(true)}} className="bg-[#112431] rounded-full text-[#2EA2E6] hover:cursor-pointer hover:bg-[#112431]/80">
           {userInitials}
         </Button>
         )}
