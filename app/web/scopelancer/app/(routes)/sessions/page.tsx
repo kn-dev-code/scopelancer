@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -6,8 +7,41 @@ import { Spinner } from '@/components/ui/spinner'
 import { Skeleton } from '@/components/ui/skeleton'
 import SideBar from '../pages/sidebar'
 import Link from 'next/link'
+import { useState } from 'react'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+import {z} from "zod";
+import {useForm} from "react-hook-form";
 
 const Session = () => {
+  const [addingSession, setAddingSession] = useState(false);
+
+  const sessionSchema = z.object({
+    ipAddress: z.string().optional(),
+    userAgent: z.string().optional(),
+    title: z.string().min(5, "Must be at least 5 characters in title"),
+    description: z.string().min(1, "Must be at least 5 characters in description").optional()
+  })
+
+  type SessionType = z.infer<typeof sessionSchema>;
+
+  const form = useForm<SessionType>({
+    resolver: zodResolver(sessionSchema),
+    defaultValues: {
+      ipAddress: "",
+      userAgent: "",
+      title: "",
+      description: "",
+    }
+  })
+
+  const handleSession = () => {
+    try {
+
+    } catch(e) {
+      console.error(e);
+    }
+  }
     return (
         <>
           <div className="bg-[#0A0F13] font-sans dark:bg-black w-full h-screen overflow-hidden">
@@ -21,7 +55,7 @@ const Session = () => {
                 <div className="flex flex-row justify-self-center justify-between">
                   <span className="text-[#9199A2] text-sm">Every client call you've turned into documented scope.</span>
                   <div className = "relative left-[20%] bottom-4">
-                  <Button className="bg-[#2EA2E6] text-black rounded-lg h-10 hover:bg-[#2EA2E6]/80 hover:cursor-pointer">
+                  <Button onClick = {() => {}} className="bg-[#2EA2E6] text-black rounded-lg h-10 hover:bg-[#2EA2E6]/80 hover:cursor-pointer">
                     + New Session
                   </Button>
                     </div>
@@ -36,7 +70,7 @@ const Session = () => {
                     <CardHeader>
                       <div className="flex flex-row justify-between">
                         <CardTitle className="text-[#9199A2] text-md"><Spinner/></CardTitle> {/* Company Name */}
-                        <CardTitle className = ""><Skeleton className = "w-24"/></CardTitle> {/* Session Title */}
+                        <CardTitle className = ""><Skeleton className = "w-24 bg-white"/></CardTitle> {/* Session Title */}
                         <Button className = "rounded-lg"><Skeleton className = "w-24"/></Button> {/* Session Status */}
                       </div>
                       <CardDescription className="text-white text-xl"><Skeleton className = "w-24"/></CardDescription>

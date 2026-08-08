@@ -65,17 +65,17 @@ model Admin {
 
 /// Better Auth Internal Session Model (Tracks active logins)
 model Session {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  token     String   @unique
-  expiresAt DateTime
-  ipAddress String?
-  userAgent String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  admin     Admin?   @relation(fields: [adminId], references: [id])
-  adminId   String?
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token       String   @unique
+  expiresAt   DateTime
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  admin       Admin?   @relation(fields: [adminId], references: [id])
+  adminId     String?
 
   @@map("session")
 }
