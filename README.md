@@ -17,7 +17,7 @@ This project doubles as a deliberate learning exercise in full-stack architectur
 
 ## Architecture at a glance
 
-Scopelancer is split into two independently deployed services that communicate over an authenticated internal API, unified by a single Postgres database as the source of truth.
+Scopelancer is split into two independently deployed services that will communicate over an authenticated internal API, unified by a single Postgres database as the source of truth.
 
 ```mermaid
 flowchart LR
@@ -38,8 +38,8 @@ flowchart LR
     Stripe -->|"checkout.session.completed"| NextApp
 ```
 
-- **`apps/web`** — Next.js (App Router). UI, auth, database access, Stripe billing, and pipeline orchestration all live here. This is the only service that talks to Postgres.
-- **`apps/ai-service`** — FastAPI + LangGraph. A stateless worker that runs the transcription-to-email pipeline as a durable state machine and reports results back to `apps/web` via webhook callbacks. It never touches the database directly.
+- **`app/web`** — Next.js (App Router). UI, auth, database access, and (soon) Stripe billing and pipeline orchestration all live here. This is the only service that talks to Postgres.
+- **`app/ai`** — reserved for the FastAPI + LangGraph worker. A stateless service that will run the transcription-to-email pipeline as a durable state machine and report results back to `app/web` via webhook callbacks. Not started yet — currently an empty placeholder.
 
 Full architectural rationale, data-flow diagrams, database schema design, the LangGraph pipeline design, and the billing model live in the project's planning docs and will be expanded as each phase is implemented.
 
@@ -47,48 +47,47 @@ Full architectural rationale, data-flow diagrams, database schema design, the La
 
 **Frontend / Backend**
 
-- **Next.js** (App Router) — UI, Server Components, and API Route Handlers
-- **Subframe** + **shadcn/ui** + **Tailwind CSS** — UI design and component styling
-- **Vercel** — deployment
-- **Supabase (Postgres)** + **Prisma ORM** — database and schema management
-- **Better Auth** (Prisma adapter, Google OAuth) — authentication
+- **Next.js 16** (App Router) — UI, Server Components, and API Route Handlers
+- **shadcn/ui** + **Tailwind CSS v4** — component styling (Subframe integration is still planned but not yet wired in)
+- **Vercel** — deployment target
+- **Supabase (Postgres)** + **Prisma ORM 7** (via `@prisma/adapter-pg`) — database and schema management
+- **Better Auth** (Prisma adapter) — authentication, with **email/password**, **Google OAuth**, and **GitHub OAuth** all enabled
+- **TanStack Query** — client-side data fetching/caching for session and user state
 
-**AI / Agentic pipeline**
+**AI / Agentic pipeline** *(not started)*
 
 - **Python** + **FastAPI** — service host
 - **LangGraph** — sequential state-machine pipeline orchestration
 - **Groq Whisper** — audio transcription (input gate)
 - **Claude Sonnet** — scope-to-diagram (Mermaid.js) and scope-to-email generation
 
-**Payments**
+**Payments** *(scaffolded, not wired up)*
 
-- **Stripe** — prepaid credit-wallet billing. Users purchase credit packs; each pipeline run is metered against actual usage (audio duration + token counts) and deducted from an append-only credit ledger.
+- **Stripe** — SDK installed and initialized; prepaid credit-wallet billing model designed (see the architecture plan) but the ledger schema, Checkout flow, and webhooks are not yet implemented.
 
 ## Repository structure
 
 ```
 scopelancer/
-  apps/
-    web/           # Next.js app: UI, auth, Prisma, Stripe
-    ai-service/    # FastAPI + LangGraph pipeline
-  packages/        # Shared contracts/types (introduced once needed)
+  app/
+    web/
+      scopelancer/     # the actual Next.js app (App Router, Prisma, Better Auth, Stripe SDK)
+    ai/                 # reserved for the FastAPI + LangGraph service — currently empty
 ```
 
-Managed as a pnpm workspace monorepo. `apps/web` deploys to Vercel; `apps/ai-service` deploys independently to Railway.
+Note: `app/web/scopelancer` has an extra nesting level from the initial `create-next-app` scaffold. It works fine as-is; flattening it is a cosmetic cleanup, not a blocker. There is no root-level `package.json`/workspace config yet tying `app/web` and `app/ai` together — that formal monorepo wiring is still pending.
 
-## Project status
+## What's built so far
 
-Currently in the architecture and planning phase. Build phases, in order:
+- **Auth**: Better Auth wired with the Prisma adapter, supporting email/password, Google OAuth, and GitHub OAuth. Session cookies, protected-route middleware (`/dashboard`, `/sessions`, `/billings`, `/profile`, `/plan`), and logout all work end-to-end.
+- **Database schema (v1)**: `User`, `Admin`, `Session`, `Account`, `Verification` (Better Auth), plus a domain `AppSession` model (the app's "work session" concept, renamed to avoid clashing with Better Auth's `Session`) and an early, still-empty `Billing` stub.
+- **API routes**: session creation (`POST /api/sessions/users`), current-user profile get/update, and role-gated admin profile get/update.
+- **UI shell**: dashboard, sessions list, billing page, and a Stripe checkout placeholder page, all built on shared `NavBar`/`SideBar` components and shadcn primitives. Most data on these pages is currently hardcoded placeholder content (e.g. credit balances, session counts) pending real queries.
 
-1. Foundation — monorepo scaffold, Prisma schema, Better Auth + Google OAuth
-2. Frontend shell — dashboard and project layouts
-3. Upload pipeline — signed audio uploads to Supabase Storage
-4. AI service scaffold — FastAPI skeleton, service-to-service auth
-5. LangGraph pipeline — the four processing nodes with structured-output validation
-6. Realtime + results UI — live progress and rendered outputs
-7. Billing — credit ledger, Stripe Checkout, usage metering and reconciliation
-8. Hardening — pipeline checkpointing, rate limiting, observability
+## What's next
+
+Not started yet: audio upload to storage, the FastAPI/LangGraph service, the credit ledger schema, and live Stripe checkout/webhooks. See the project's architecture plan for the full phased roadmap and the current actionable checklist.
 
 ## Getting started
 
-Setup instructions will be added once the Phase 1 scaffold (monorepo, Next.js app, Prisma schema, and auth) lands.
+Setup instructions will be added once environment conventions (`.env.example` for each service) are finalized.
