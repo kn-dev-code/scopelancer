@@ -77,16 +77,20 @@ scopelancer/
 
 Note: `app/web/scopelancer` has an extra nesting level from the initial `create-next-app` scaffold. It works fine as-is; flattening it is a cosmetic cleanup, not a blocker. There is no root-level `package.json`/workspace config yet tying `app/web` and `app/ai` together — that formal monorepo wiring is still pending.
 
-## What's built so far
+## Project status
 
-- **Auth**: Better Auth wired with the Prisma adapter, supporting email/password, Google OAuth, and GitHub OAuth. Session cookies, protected-route middleware (`/dashboard`, `/sessions`, `/billings`, `/profile`, `/plan`), and logout all work end-to-end.
-- **Database schema (v1)**: `User`, `Admin`, `Session`, `Account`, `Verification` (Better Auth), plus a domain `AppSession` model (the app's "work session" concept, renamed to avoid clashing with Better Auth's `Session`) and an early, still-empty `Billing` stub.
-- **API routes**: session creation (`POST /api/sessions/users`), current-user profile get/update, and role-gated admin profile get/update.
-- **UI shell**: dashboard, sessions list, billing page, and a Stripe checkout placeholder page, all built on shared `NavBar`/`SideBar` components and shadcn primitives. Most data on these pages is currently hardcoded placeholder content (e.g. credit balances, session counts) pending real queries.
+Tracking against the 8-phase roadmap from the architecture plan:
 
-## What's next
+- [x] **Phase 1 — Foundation** — *Done, one gap remaining.* Better Auth wired with the Prisma adapter (email/password, Google OAuth, GitHub OAuth). Session cookies, protected-route middleware (`/dashboard`, `/sessions`, `/billings`, `/profile`, `/plan`), and logout all work end-to-end. Database schema v1 in place: `User`, `Admin`, `Session`, `Account`, `Verification` (Better Auth) plus a domain `AppSession` model and an early `Billing` stub. Remaining gap: no `.env.example` / environment conventions documented yet, and there's no root-level workspace config tying `app/web` and `app/ai` together.
+- [ ] **Phase 2 — Frontend shell** — *In progress.* Dashboard, sessions list, and billing pages exist, built on shared `NavBar`/`SideBar` components and shadcn primitives, plus session creation (`POST /api/sessions/users`) and profile get/update API routes. Most on-page data (credit balances, session counts, statuses) is still hardcoded placeholder content — wiring it to real Prisma queries is the next step, along with finishing the session creation form.
+- [ ] **Phase 3 — Upload pipeline** — *Not started.* No Supabase Storage signed-upload flow yet.
+- [ ] **Phase 4 — AI service scaffold** — *Not started.* `app/ai` is an empty placeholder; no FastAPI project exists yet.
+- [ ] **Phase 5 — LangGraph pipeline** — *Not started.*
+- [ ] **Phase 6 — Realtime + results UI** — *Not started.*
+- [ ] **Phase 7 — Billing** — *Not started.* Stripe SDK is installed and initialized (`lib/stripe/stripe.ts`) and credit packs are mocked up on the billing page UI, but there's no credit ledger schema, real Checkout session creation, or webhook handling yet.
+- [ ] **Phase 8 — Hardening** — *Not started.*
 
-Not started yet: audio upload to storage, the FastAPI/LangGraph service, the credit ledger schema, and live Stripe checkout/webhooks. See the project's architecture plan for the full phased roadmap and the current actionable checklist.
+See the project's architecture plan for the full phased roadmap and rationale behind each decision.
 
 ## Getting started
 
