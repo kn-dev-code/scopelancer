@@ -1,0 +1,24 @@
+---
+description: FastAPI/LangGraph conventions for the app/ai service (not yet built)
+globs: app/ai/**/*.py
+alwaysApply: false
+---
+
+# app/ai conventions
+
+This service does not exist yet as of this writing. When scaffolding/building it, follow these constraints from the architecture plan:
+
+## Statelessness
+
+- No direct Postgres/Prisma access, ever. Receive a job (`runId`, `audioUrl`) from `app/web`, do the AI work, and report results back via an authenticated webhook callback (shared-secret header for now; upgrade to short-lived signed JWT later).
+- Return `202 Accepted` immediately on `/pipeline/run`; do the actual LangGraph execution in a background task, not inline in the request/response cycle.
+
+## LangGraph state machine
+
+- Model pipeline state as a single typed Pydantic model threaded through all nodes (`transcript`, `scope_json`, `mermaid_code`, `email_sequence`, `retry_count`, `error`) — don't pass loose dicts between nodes.
+- Structured LLM output (Node 1's JSON, Node 2's Mermaid) must be schema-validated. On validation failure, route back to the same node via a conditional edge up to a retry cap — don't silently accept malformed output.
+- Every node must report its own cost (tokens in/out, audio duration) in its callback payload — this is what makes usage-based billing accurate. Don't estimate cost after the fact if the real numbers were available during execution.
+
+## Dependencies
+
+Use `uv` for Python dependency management (`pyproject.toml`), not pip/requirements.txt directly.

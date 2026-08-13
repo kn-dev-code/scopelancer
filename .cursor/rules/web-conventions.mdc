@@ -1,0 +1,34 @@
+---
+description: Next.js/Prisma/Better Auth conventions for the app/web service
+globs: app/web/scopelancer/**/*.ts,app/web/scopelancer/**/*.tsx
+alwaysApply: false
+---
+
+# app/web conventions
+
+## Auth + Prisma
+
+- Import both from the same place: `import { auth, prisma } from "@/lib/betterauth/auth"`. Don't instantiate a second `PrismaClient` elsewhere.
+- Every route handler that requires a signed-in user must check:
+  ```typescript
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return NextResponse.json({ error: "..." }, { status: HTTP_STATUS.UNAUTHORIZED });
+  ```
+- Admin-only routes additionally check `session.user.role !== "ADMIN"`.
+
+## HTTP status codes
+
+Always use the `HTTP_STATUS` constants from `@/lib/error_codes/error-code`. Never hardcode numeric status codes in route handlers.
+
+## Route protection
+
+The middleware matcher in `lib/middleware/middleware.ts` is the single source of truth for which paths require a session. When adding a new protected page/route group, add its path prefix to both the `matcher` config and the corresponding `*Routes` check inside `middleware()` — they must stay in sync.
+
+## Domain models
+
+- Use `AppSession` for the app's "meeting → pipeline run" concept, never `Session` (reserved for Better Auth).
+- The `Billing` model is a placeholder — when implementing real billing, replace it with the ledger design (`CreditTransaction`, `CreditPack`) rather than adding balance fields directly to `User`.
+
+## UI
+
+Pages share `NavBar` and `SideBar` from `app/(routes)/pages/`. Follow the existing dark theme palette (`#0A0F13` background, `#12161D` cards, `#2EA2E6` accent) for new pages rather than introducing new colors.

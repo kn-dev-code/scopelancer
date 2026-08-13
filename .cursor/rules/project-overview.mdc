@@ -1,0 +1,26 @@
+---
+description: Scopelancer project overview and core architectural principles
+alwaysApply: true
+---
+
+# Scopelancer
+
+A SaaS that turns a recorded client meeting into a validated scope summary, a Mermaid diagram, and a follow-up email sequence — for freelancers fighting scope creep.
+
+## Two services, one source of truth
+
+- `app/web/scopelancer/` — Next.js (App Router). Owns the UI, auth, and **all** database access via Prisma. This is the only service allowed to talk to Postgres.
+- `app/ai/` — reserved for a FastAPI + LangGraph worker (not started yet). It will be stateless from the DB's perspective: it receives a job, does AI work (Groq Whisper transcription, Claude Sonnet calls), and reports results back to `app/web` via an authenticated webhook callback. **Never give it a direct Postgres connection** — that would create two ORMs fighting over one schema.
+
+## Billing model
+
+Credits are a prepaid, append-only ledger, not a mutable balance column. Any credit-related schema/logic must follow hold → reconcile: reserve an estimated-max cost before starting expensive work, then convert to an exact usage transaction (refunding the delta) once real cost is known. Never decrement a balance field directly.
+
+## Naming
+
+- Better Auth owns `User`, `Account`, `Session`, `Verification` — don't hand-edit these beyond adding fields via Better Auth's plugin/config system.
+- The app's own "meeting → pipeline run" concept is called `AppSession`, specifically to avoid colliding with Better Auth's `Session`. Keep using that name for any new work-session-related models.
+
+## Current state
+
+Auth (email/password, Google, GitHub via Better Auth) and the basic dashboard/sessions/billing UI shell exist. The AI pipeline, credit ledger, audio upload, and Stripe checkout are not yet implemented — check the architecture plan before assuming a piece of billing or AI infra already exists.
