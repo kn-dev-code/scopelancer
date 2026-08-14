@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, prisma } from "@/lib/betterauth/auth";
-import { getSession } from "better-auth/api";
 import { headers } from "next/headers";
 import { HTTP_STATUS } from "@/lib/error_codes/error-code";
 
@@ -34,4 +33,28 @@ export async function POST(request: NextRequest) {
             { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
         )
     }
+}
+
+export async function PATCH(request: NextRequest) {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    })
+
+    if (!session) {
+        return NextResponse.json({error: "Unauthorized"}, {status: HTTP_STATUS.UNAUTHORIZED})
+    }
+
+    const body = await request.json();
+    const {title, description} = body;
+
+    const updateSession = await prisma.appSession.update({
+        data: {
+        title: body.title,
+        description: body.description,
+        },
+        select: {
+            title: true,
+            description: true,
+        }
+    })
 }

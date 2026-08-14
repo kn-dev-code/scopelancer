@@ -25,7 +25,6 @@ const NavBar = () => {
             description: "You will be redirected...",
           })
           router.push("/");
-          // Will work on later
         }
       }
     })
