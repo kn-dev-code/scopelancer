@@ -36,25 +36,31 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    })
+    try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        })
 
-    if (!session) {
-        return NextResponse.json({error: "Unauthorized"}, {status: HTTP_STATUS.UNAUTHORIZED})
-    }
-
-    const body = await request.json();
-    const {title, description} = body;
-
-    const updateSession = await prisma.appSession.update({
-        data: {
-        title: body.title,
-        description: body.description,
-        },
-        select: {
-            title: true,
-            description: true,
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: HTTP_STATUS.UNAUTHORIZED })
         }
-    })
+
+        const body = await request.json();
+        const { title, description } = body;
+
+        const updateSession = await prisma.appSession.update({
+            where: { id: body.id },
+            data: {
+                title, description
+            },
+            select: {
+                title: true,
+                description: true,
+            }
+        })
+
+        return NextResponse.json({ message: "Session updated successfully", session: updateSession }, { status: HTTP_STATUS.OK })
+    } catch (e) {
+        return NextResponse.json({ error: "Internal Server Error" }, { status: HTTP_STATUS.INTERNAL_SERVER_ERROR })
+    }
 }
