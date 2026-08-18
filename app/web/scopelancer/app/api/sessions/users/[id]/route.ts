@@ -3,8 +3,13 @@ import { HTTP_STATUS } from "@/lib/error_codes/error-code";
 import { sessionAuth } from "@/lib/session-auth-check/session-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-// Get session by search
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+
+type RouteParams = {
+    params: Promise<{id: string}>
+}
+
+// GET /api/sessions/users/[id]
+export async function GET(request: NextRequest, { params }: RouteParams) {
     try {
         const { id } = await params;
         const session = await sessionAuth();
@@ -13,14 +18,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             return NextResponse.json({ error: "Unauthorized" }, { status: HTTP_STATUS.UNAUTHORIZED })
         }
         const findSession = await prisma.appSession.findUnique({
-            where: { id },
+            where: { id, userId: session.user.id },
         })
 
         if (!findSession) {
             return NextResponse.json({
                 error: "Not Found"
             }, { status: HTTP_STATUS.NOT_FOUND })
-        }
+        }                                        
 
         return NextResponse.json({
             message: "Session retrieved successfully",
@@ -31,33 +36,45 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+// PATCH /api/sessions/users/[id]
+export async function PATCH(request: NextRequest, { params }: RouteParams) {
     try {
-        const { id } = await params;
-        const session = await sessionAuth()
+        const {id} = await params;
+        const session = await sessionAuth();
 
         if (!session) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: HTTP_STATUS.UNAUTHORIZED })
+            return NextResponse.json({error: "Unauthorized"}, {status: HTTP_STATUS.UNAUTHORIZED})
         }
-        const body = await request.json();
-        const { title, description } = body;
+
+        const findSession = await prisma.appSession.findFirst({
+            where: {id, userId: session.user.id},
+        })
+
+        if (!findSession) {
+            return NextResponse.json({error: "Not Found"}, {status: HTTP_STATUS.NOT_FOUND})
+        }
+
+        const body = await request.json()
+        const {title, description} = body;
         const updateSession = await prisma.appSession.update({
-            where: { id: body.id },
+            where: {id},
             data: {
-                title,
-                description
+                ...(title !== undefined && (title)),
+                ...(description !== undefined && (description))
             },
             select: {
                 title: true,
-                description: true
+                description: true,
+                sessionStatus: true,
+                updatedAt: true
             }
         })
-        return NextResponse.json(
-            { message: "Session updated successful", updatedSession: updateSession },
-            { status: HTTP_STATUS.OK }
-        )
-    } catch (e) {
-        return NextResponse.json({ error: "Internal Server Error" }, { status: HTTP_STATUS.INTERNAL_SERVER_ERROR })
+
+        return NextResponse.json({
+            message: "Session updated successfully", status: HTTP_STATUS.OK
+        })
+    } catch(e) {
+        return NextResponse.json({error: "Internal Server Error"}, {status: HTTP_STATUS.INTERNAL_SERVER_ERROR})
     }
 
 }

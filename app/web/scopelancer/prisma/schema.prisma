@@ -3,6 +3,7 @@
 /// Generator Runner
 generator client {
   provider = "prisma-client-js"
+  output   = "../lib/generated/client"
 }
 
 /// Database connection
