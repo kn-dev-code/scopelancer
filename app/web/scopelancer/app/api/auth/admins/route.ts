@@ -2,13 +2,11 @@ import { auth, prisma } from "@/lib/betterauth/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies, headers } from "next/headers";
 import { HTTP_STATUS } from "@/lib/error_codes/error-code";
+import { sessionAuth } from "@/lib/session-auth-check/session-auth";
 // GET api/admins/me
 export async function GET(request: NextRequest) {
     try {
-        const session = await auth.api.getSession({
-            headers: await headers(),
-        })
-
+        const session = await sessionAuth();
         if (!session || session.user.role !== "ADMIN") {
             return NextResponse.json({
                 error: "Unauthorized",
@@ -33,15 +31,12 @@ export async function GET(request: NextRequest) {
 
 // PATCH api/admins/update
 export async function PATCH(request: NextRequest) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    })
-
+    const session = await sessionAuth();
     if (!session || session.user.role !== "ADMIN") {
-        return NextResponse.json(
-            { error: "Unauthorized" },
-            { status: HTTP_STATUS.UNAUTHORIZED }
-        )
+        return NextResponse.json({
+            error: "Unauthorized",
+            status: HTTP_STATUS.UNAUTHORIZED
+        })
     }
 
     const body = await request.json()

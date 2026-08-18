@@ -2,6 +2,7 @@ import { auth, prisma } from "@/lib/betterauth/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { HTTP_STATUS } from "@/lib/error_codes/error-code";
+import { sessionAuth } from "@/lib/session-auth-check/session-auth";
 
 
 // Delete User
@@ -10,18 +11,12 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session || session.user.role !== "ADMIN") {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: HTTP_STATUS.UNAUTHORIZED }
-      );
-    }
-
     const { id } = await params;
+    const session = await sessionAuth();
+
+        if (!session || session.user.role !== "ADMIN") {
+            return NextResponse.json({ error: "Unauthorized" }, { status: HTTP_STATUS.UNAUTHORIZED })
+        }
 
     await prisma.user.delete({
       where: { id },

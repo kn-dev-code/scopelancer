@@ -19,5 +19,8 @@
         "running": "Running",
         "failed": "Failed",
         "Completed": "Completed"
+    },
+    "agents": {
+        "newChat": "New chat"
     }
 }

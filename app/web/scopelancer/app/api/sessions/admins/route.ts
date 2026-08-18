@@ -2,19 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth, prisma } from "@/lib/betterauth/auth";
 import { headers } from "next/headers";
 import { HTTP_STATUS } from "@/lib/error_codes/error-code";
+import { sessionAuth } from "@/lib/session-auth-check/session-auth";
 
 
 // Get all sessions
-export async function GET(request: NextRequest, { params }: { params: Promise<String[]> }) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    })
+export async function GET(request: NextRequest) {
+    const session = await sessionAuth();
 
     if (!session || session.user.role !== "ADMIN") {
-        return NextResponse.json(
-            { error: "Unauthorized" },
-            { status: HTTP_STATUS.UNAUTHORIZED }
-        )
+        return NextResponse.json({ error: "Unauthorized" }, { status: HTTP_STATUS.UNAUTHORIZED })
     }
 
     const getSessionCards = await prisma.appSession.findMany()
@@ -33,15 +29,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<St
 }
 
 // Delete all cards
-export async function DELETE(request: NextRequest, { params }: { params: Promise<String[]> }) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    })
+export async function DELETE(request: NextRequest) {
+    const session = await sessionAuth();
 
     if (!session || session.user.role !== "ADMIN") {
-        return NextResponse.json({
-            error: "Unauthorized"
-        }, { status: HTTP_STATUS.UNAUTHORIZED })
+        return NextResponse.json({ error: "Unauthorized" }, { status: HTTP_STATUS.UNAUTHORIZED })
     }
 
     const deleteAllSessions = await prisma.appSession.deleteMany({});
@@ -53,16 +45,13 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 }
 
 // Update all cards
-export async function PATCH(request: NextRequest, {params} : {params: Promise<String[]>}) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    })
+export async function PATCH(request: NextRequest) {
+    const session = await sessionAuth();
 
     if (!session || session.user.role !== "ADMIN") {
-        return NextResponse.json({
-            error: "Unauthorized"
-        }, { status: HTTP_STATUS.UNAUTHORIZED })
+        return NextResponse.json({ error: "Unauthorized" }, { status: HTTP_STATUS.UNAUTHORIZED })
     }
+
 
     //const updateAllSessions = await prisma.appSession.updateMany(
         //where: {}

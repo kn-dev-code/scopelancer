@@ -116,7 +116,7 @@ model Verification {
 
 /// Your Custom Application Work Session Model (Renamed from Session)
 model AppSession {
-  id            Int           @id @default(autoincrement())
+  id            String        @id @default(cuid())
   title         String
   description   String?
   createdAt     DateTime      @default(now())
