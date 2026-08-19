@@ -5,14 +5,15 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/ca
 import { ActivityIcon, CheckIcon, CoinsIcon, FileIcon, ShieldCheckIcon, XIcon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import NavBar from "../pages/navbar";
 import SideBar from "../pages/sidebar";
 import { client } from "@/lib/betterauth/client";
 // Dashboard not working to query user's credentials
 const Dashboard = () => {
+  const router = useRouter();
   const {data, isPending, error, refetch} = client.useSession();
-
   const userInformation = {
     sessionCard: {
       title: "Total Sessions",
@@ -78,6 +79,10 @@ const Dashboard = () => {
     )
   }
 
+  const handleSessionNav = () => {
+    router.push('/sessions');
+  }
+
   return (
     <>
       <div className="bg-[#0A0F13] font-sans dark:bg-black w-full h-screen overflow-hidden">
@@ -91,7 +96,7 @@ const Dashboard = () => {
             <div className="flex flex-row justify-self-center justify-between">
               <span className="text-[#9199A2] text-sm">Turn your client calls into scope you can defend in writing.</span>
               <div className="relative left-[12%] bottom-4">
-                <Button className="bg-[#2EA2E6] text-black rounded-lg h-10 hover:bg-[#2EA2E6]/80 hover:cursor-pointer">
+                <Button onClick = {handleSessionNav} className="bg-[#2EA2E6] text-black rounded-lg h-10 hover:bg-[#2EA2E6]/80 hover:cursor-pointer">
                   + New Session
                 </Button>
               </div>

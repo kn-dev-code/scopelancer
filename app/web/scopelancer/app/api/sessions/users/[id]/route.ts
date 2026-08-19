@@ -55,24 +55,26 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         }
 
         const body = await request.json()
-        const {title, description} = body;
+        const {title, description, clientName, companyName} = body;
         const updateSession = await prisma.appSession.update({
             where: {id},
             data: {
                 ...(title !== undefined && (title)),
-                ...(description !== undefined && (description))
+                ...(description !== undefined && (description)),
+                ...(clientName !== undefined && (clientName)),
+                ...(companyName !== undefined && (companyName)),
             },
             select: {
                 title: true,
+                clientName: true,
+                companyName: true,
                 description: true,
                 sessionStatus: true,
                 updatedAt: true
             }
         })
 
-        return NextResponse.json({
-            message: "Session updated successfully", status: HTTP_STATUS.OK
-        })
+        return NextResponse.json({message: "Session update successfully", updatedSession: updateSession}, {status: HTTP_STATUS.OK})
     } catch(e) {
         return NextResponse.json({error: "Internal Server Error"}, {status: HTTP_STATUS.INTERNAL_SERVER_ERROR})
     }

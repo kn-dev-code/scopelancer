@@ -4,6 +4,8 @@ import { headers } from "next/headers";
 import { HTTP_STATUS } from "@/lib/error_codes/error-code";
 import { sessionAuth } from "@/lib/session-auth-check/session-auth";
 
+
+// GET /api/sessions/users
 export async function GET(request:NextRequest) {
     const session = await sessionAuth();
 
@@ -22,7 +24,7 @@ export async function GET(request:NextRequest) {
 
 
 
-
+// POST /api/sessions/users
 export async function POST(request: NextRequest) {
     try {
         const session = await sessionAuth();
@@ -31,7 +33,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: HTTP_STATUS.UNAUTHORIZED })
         }
         const body = await request.json();
-        const {title, description, sessionStatus} = body;
+        const {title, description, clientName, companyName, sessionStatus} = body;
         if (!title) {
             return NextResponse.json({error: "Not Found"}, {status: HTTP_STATUS.NOT_FOUND})
         }
@@ -39,6 +41,8 @@ export async function POST(request: NextRequest) {
             data: {
                 title,
                 description,
+                clientName,
+                companyName,
                 userId: session.user.id,
                 sessionStatus: sessionStatus || "NOTSTARTED"
             }
