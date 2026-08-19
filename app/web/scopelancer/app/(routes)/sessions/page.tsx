@@ -6,17 +6,19 @@ import NavBar from '../pages/navbar'
 import { Spinner } from '@/components/ui/spinner'
 import { Skeleton } from '@/components/ui/skeleton'
 import SideBar from '../pages/sidebar'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { api } from '@/lib/axios/api'
-import { resetPassword } from 'better-auth/api'
 import { toast } from '@/components/ui/toast'
 
 const Session = () => {
+  const router = useRouter();
   const [addingSession, setAddingSession] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const queryClient = useQueryClient();
 
   const sessionSchema = z.object({
@@ -27,8 +29,9 @@ const Session = () => {
   })
 
   type SessionType = z.infer<typeof sessionSchema>;
+  type UpdatedSessionType = Partial<SessionType>;
 
-  const { register, handleSubmit, reset, formState: { isDirty, dirtyFields, errors } } = useForm<SessionType>({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<SessionType>({
     resolver: zodResolver(sessionSchema),
     defaultValues: {
       clientName: "",
@@ -58,26 +61,52 @@ const Session = () => {
   const postSessionData = useMutation({
     mutationFn: async(newSessionData: SessionType) => {
       const {data} = await api.post("/api/sessions/users", newSessionData);
+      return data.session;
     }
   })
   // patch session data
-  const {mutate} = useMutation({
-    mutationFn: async(updatedData) => {
-      const {data}  = await api.patch(`/api/sessions/users/${id}`, updatedData);
-      return data;
+  const patchSessionData = useMutation({
+    mutationFn: async({id, data} : {id: string, data: UpdatedSessionType}) => {
+      const {data: resData} = await api.patch(`/api/sessions/users/${id}`, data);
+      return resData;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['session']});
+      toast.add({
+        title: "Session updated successfully",
+        type: "success"
+      }),
+      queryClient.invalidateQueries({queryKey: ['sessions']});
     }
   });
 
-  const onSubmit = (sessionSchema) => {
-    mutate()
-  }
-  const deleteSessionData = () => {
+  // delete session data
+  const deleteSessionData = useMutation({
+    mutationFn: async (id: string) => {
+      const {data: resData} = await api.delete(`/api/sessions/users/${id}`);
+      return resData;
+    },
+    onSuccess: () => {
+      toast.add({
+        title: "Session deleted successfully",
+        type: "success",
+      }),
+      queryClient.invalidateQueries({queryKey: ['sessions']});
+    }
+  })
 
+  const handleUpdate = (sessionId: string, formData: UpdatedSessionType) => {
+    patchSessionData.mutate({id: sessionId, data: formData});
   }
 
+  const handleAddingSession = () => {
+    setAddingSession(true);
+    router.push("/new-session");
+  }
+
+
+  const onSubmit = (formData: SessionType) => {
+    postSessionData.mutate(formData);
+  }
 
   return (
     <>
@@ -92,7 +121,7 @@ const Session = () => {
             <div className="flex flex-row justify-self-center justify-between">
               <span className="text-[#9199A2] text-sm">Every client call you've turned into documented scope.</span>
               <div className="relative left-[20%] bottom-4">
-                <Button onClick={() => { }} className="bg-[#2EA2E6] text-black rounded-lg h-10 hover:bg-[#2EA2E6]/80 hover:cursor-pointer">
+                <Button onClick={handleAddingSession} className="bg-[#2EA2E6] text-black rounded-lg h-10 hover:bg-[#2EA2E6]/80 hover:cursor-pointer">
                   + New Session
                 </Button>
               </div>
