@@ -1,8 +1,5 @@
-
 const StripeCheckout = () => {
-  return (
-    <div>StripeCheckout</div>
-  )
-}
+  return <div>StripeCheckout</div>;
+};
 
-export default StripeCheckout
+export default StripeCheckout;

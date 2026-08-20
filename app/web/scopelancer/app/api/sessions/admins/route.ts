@@ -4,56 +4,69 @@ import { headers } from "next/headers";
 import { HTTP_STATUS } from "@/lib/error_codes/error-code";
 import { sessionAuth } from "@/lib/session-auth-check/session-auth";
 
-
 // Get all sessions
 export async function GET(request: NextRequest) {
-    const session = await sessionAuth();
+  const session = await sessionAuth();
 
-    if (!session || session.user.role !== "ADMIN") {
-        return NextResponse.json({ error: "Unauthorized" }, { status: HTTP_STATUS.UNAUTHORIZED })
-    }
-
-    const getSessionCards = await prisma.appSession.findMany()
-
-    if (getSessionCards.length === 0) {
-        return NextResponse.json(
-            { error: "No sessions found" },
-            { status: HTTP_STATUS.NOT_FOUND }
-        )
-    }
-
+  if (!session || session.user.role !== "ADMIN") {
     return NextResponse.json(
-        { message: "Session card retrieval successful", sessionCards: { getSessionCards } },
-        { status: HTTP_STATUS.OK }
-    )
+      { error: "Unauthorized" },
+      { status: HTTP_STATUS.UNAUTHORIZED },
+    );
+  }
+
+  const getSessionCards = await prisma.appSession.findMany();
+
+  if (getSessionCards.length === 0) {
+    return NextResponse.json(
+      { error: "No sessions found" },
+      { status: HTTP_STATUS.NOT_FOUND },
+    );
+  }
+
+  return NextResponse.json(
+    {
+      message: "Session card retrieval successful",
+      sessionCards: { getSessionCards },
+    },
+    { status: HTTP_STATUS.OK },
+  );
 }
 
 // Delete all cards
 export async function DELETE(request: NextRequest) {
-    const session = await sessionAuth();
+  const session = await sessionAuth();
 
-    if (!session || session.user.role !== "ADMIN") {
-        return NextResponse.json({ error: "Unauthorized" }, { status: HTTP_STATUS.UNAUTHORIZED })
-    }
-
-    const deleteAllSessions = await prisma.appSession.deleteMany({});
-
+  if (!session || session.user.role !== "ADMIN") {
     return NextResponse.json(
-        {message: "Sessions deleted successfully", deletedSessionCards: {deleteAllSessions}},
-        {status: HTTP_STATUS.OK}
-    )
+      { error: "Unauthorized" },
+      { status: HTTP_STATUS.UNAUTHORIZED },
+    );
+  }
+
+  const deleteAllSessions = await prisma.appSession.deleteMany({});
+
+  return NextResponse.json(
+    {
+      message: "Sessions deleted successfully",
+      deletedSessionCards: { deleteAllSessions },
+    },
+    { status: HTTP_STATUS.OK },
+  );
 }
 
 // Update all cards
 export async function PATCH(request: NextRequest) {
-    const session = await sessionAuth();
+  const session = await sessionAuth();
 
-    if (!session || session.user.role !== "ADMIN") {
-        return NextResponse.json({ error: "Unauthorized" }, { status: HTTP_STATUS.UNAUTHORIZED })
-    }
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: HTTP_STATUS.UNAUTHORIZED },
+    );
+  }
 
-
-    //const updateAllSessions = await prisma.appSession.updateMany(
-        //where: {}
-   // )
+  //const updateAllSessions = await prisma.appSession.updateMany(
+  //where: {}
+  // )
 }

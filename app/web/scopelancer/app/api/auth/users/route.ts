@@ -13,18 +13,18 @@ export async function GET(request: NextRequest) {
     if (!session) {
       return NextResponse.json(
         { error: "You must be logged in first" },
-        { status: HTTP_STATUS.UNAUTHORIZED }
+        { status: HTTP_STATUS.UNAUTHORIZED },
       );
     }
 
     return NextResponse.json(
       { success: true, user: session.user },
-      { status: HTTP_STATUS.OK }
+      { status: HTTP_STATUS.OK },
     );
   } catch (e) {
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
     );
   }
 }
@@ -39,7 +39,7 @@ export async function PATCH(request: NextRequest) {
     if (!session) {
       return NextResponse.json(
         { error: "You must be logged in first" },
-        { status: HTTP_STATUS.UNAUTHORIZED }
+        { status: HTTP_STATUS.UNAUTHORIZED },
       );
     }
 
@@ -59,12 +59,12 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json(
       { success: true, user: updatedUser },
-      { status: HTTP_STATUS.OK }
+      { status: HTTP_STATUS.OK },
     );
   } catch (e) {
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
     );
   }
 }

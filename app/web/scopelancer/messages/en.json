@@ -1,26 +1,26 @@
 {
-    "common": {
-        "loading": "Loading...",
-        "error": "Something went wrong.",
-        "retry": "Try again",
-        "save": "Save",
-        "cancel": "Cancel",
-        "delete": "Delete",
-        "edit": "Edit",
-        "view": "View",
-        "back": "Back",
-        "next": "Next",
-        "search": "Search",
-        "filter": "Filter",
-        "export": "Export",
-        "noData": "No data available"
-    },
-    "status": {
-        "running": "Running",
-        "failed": "Failed",
-        "Completed": "Completed"
-    },
-    "agents": {
-        "newChat": "New chat"
-    }
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong.",
+    "retry": "Try again",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "back": "Back",
+    "next": "Next",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "noData": "No data available"
+  },
+  "status": {
+    "running": "Running",
+    "failed": "Failed",
+    "Completed": "Completed"
+  },
+  "agents": {
+    "newChat": "New chat"
+  }
 }
