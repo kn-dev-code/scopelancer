@@ -18,7 +18,7 @@ jobs:
         with:
           version: 9
 
-      - name: Node Js environment
+      - name: Node.Js environment
         uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -34,4 +34,5 @@ jobs:
         run: pnpm exec prettier --check .
 
       - name: Check Typescript Types
-        run: pnpm --filter scopelancer type-check
+        working-directory: web/scopelancer
+        run: pnpm type-check
