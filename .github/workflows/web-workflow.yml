@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults: 
       run: 
-        working-directory: web/scopelancer
+        working-directory: web
     steps:
       - name: Checking repository code
         uses: actions/checkout@v4
@@ -29,7 +29,6 @@ jobs:
           cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install dependencies
-        working-directory: web/scopelancer
         run: pnpm install --frozen-lockfile
       
       - name: Generate Prisma Client
@@ -39,5 +38,4 @@ jobs:
         run: pnpm exec prettier --check .
 
       - name: Check Typescript Types
-        working-directory: web/scopelancer
         run: pnpm type-check
