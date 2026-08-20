@@ -1,0 +1,14 @@
+name: Debugging
+
+on:
+    push: 
+      branches: ['main', 'master', 'develop']
+    pull_request: 
+      branches: ['main', 'master']
+  
+jobs:
+    app:
+      runs-on: ubuntu-latest
+    steps:
+      name: Debug / List Files
+      run: ls -la
