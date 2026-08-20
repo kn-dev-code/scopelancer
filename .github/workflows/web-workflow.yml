@@ -41,7 +41,7 @@ jobs:
         run: pnpm exec prisma generate --schema=prisma/schema.prisma
 
       - name: Check Prettier Format
-        run: pnpm exec prettier --check .
+        run: pnpm dlx prettier --check .
 
       - name: Check Typescript Types
         run: pnpm type-check
