@@ -21,14 +21,17 @@ jobs:
       - name: Node Js environment
         uses: actions/setup-node@v4
         with:
-          node_version: 20
+          node-version: 24
           cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      
+      - name: Generate Prisma Client
+        run: pnpm exec prisma generate --schema=web/scopelancer/prisma/schema.prisma
 
       - name: Check Prettier Format
         run: pnpm exec prettier --check .
 
-      - name: Check Typescript Format
-        run: pnpm type-check
+      - name: Check Typescript Types
+        run: pnpm --filter scopelancer type-check
