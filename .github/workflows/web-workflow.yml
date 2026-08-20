@@ -1,0 +1,34 @@
+name: Scopelancer
+
+on:
+  push:
+    branches: ['main', 'master', 'develop']
+  pull_request:
+    branches: ['main', 'master']
+
+jobs:
+  app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking repository code
+        uses: actions/checkout@v4
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Node Js environment
+        uses: actions/setup-node@v4
+        with:
+          node_version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check Prettier Format
+        run: pnpm exec prettier --check .
+
+      - name: Check Typescript Format
+        run: pnpm type-check
