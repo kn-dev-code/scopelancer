@@ -1,6 +1,5 @@
 import { auth, prisma } from "@/lib/betterauth/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { cookies, headers } from "next/headers";
 import { HTTP_STATUS } from "@/lib/error_codes/error-code";
 import { sessionAuth } from "@/lib/session-auth-check/session-auth";
 // GET api/admins/me
@@ -49,7 +48,7 @@ export async function PATCH(request: NextRequest) {
       name: true,
       email: true,
       image: true,
-      emailVerfied: true,
+      emailVerified: true,
       role: true,
     },
   });

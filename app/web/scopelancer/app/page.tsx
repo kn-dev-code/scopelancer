@@ -6,7 +6,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
-import dashboardPic from "@/public/dashboardpic.png";
 import Link from "next/link";
 import {
   Mic,
@@ -182,11 +181,11 @@ export default function HomeLayout() {
 
           {/* Dashboard picture */}
           <Image
+            src="/dashboardpic.png"
             className="border-4 border-[#1d2028] rounded-2xl shadow-xl shadow-[#082B44] ring-[#082B44]"
             width={1000}
             height={1000}
             style={{ objectFit: "contain" }}
-            src={dashboardPic}
             alt="picture of dashboard"
           />
         </main>
