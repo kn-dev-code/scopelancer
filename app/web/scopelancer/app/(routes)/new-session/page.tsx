@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Mic, UploadCloud } from "lucide-react";
 import { toast } from "@/components/ui/toast";
@@ -56,6 +56,21 @@ const NewSession = () => {
     },
   } as const;
 
+  const LLMToolCost = {
+    transcribe: {
+      cost: 0.2,
+    },
+    "scope-document": {
+      cost: 0.1,
+    },
+    "flow-diagram": {
+      cost: 0.12,
+    },
+    email: {
+      cost: 0.08,
+    },
+  };
+
   const audioTool = audioFileConfig[audioId as keyof typeof audioFileConfig];
 
   const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +88,9 @@ const NewSession = () => {
     }
   };
 
-  const calculateTotalCredits = () => {};
+  const calculateTotalCredits = () => {
+    useEffect(() => {}, []);
+  };
 
   return (
     <div className="bg-[#060D1A] font-sans w-full h-screen overflow-y-auto pt-5">
