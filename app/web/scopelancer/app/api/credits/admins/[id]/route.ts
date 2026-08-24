@@ -17,7 +17,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     const getUser = await prisma.user.findUnique({
-      where: { id, userId: session.user.id },
+      where: { id },
       select: {
         credits: true,
       },
