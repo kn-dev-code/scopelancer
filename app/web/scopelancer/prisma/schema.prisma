@@ -1,5 +1,3 @@
-// prisma/schema.prisma
-
 /// Generator Runner
 generator client {
   provider = "prisma-client-js"
@@ -32,12 +30,10 @@ model User {
   billings    Billing[]
 
   // Stripe features
-  stripeCustomerId String? @unique
-  subscriptionId   String? @unique
-  priceId          String?
-  status           String?
+  stripeCustomerId String?       @unique
+  subscription     Subscription?
 
-  @@map("user") // Better Auth maps to lowercase table names internally
+  @@map("user")
 }
 
 model Admin {
@@ -60,9 +56,8 @@ model Admin {
 
   // Stripe features
   stripeCustomerId String? @unique
-  subscriptionId   String? @unique
-  priceId          String?
-  status           String?
+
+  @@map("admin")
 }
 
 /// Better Auth Internal Session Model (Tracks active logins)
@@ -126,7 +121,7 @@ model AppSession {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   user          User?         @relation(fields: [userId], references: [id])
-  userId        String? // Changed to String to match your User id: String @id
+  userId        String?
   sessionStatus SessionStatus @default(NOTSTARTED)
   admin         Admin?        @relation(fields: [adminId], references: [id])
   adminId       String?
@@ -140,6 +135,34 @@ model Billing {
   user    User    @relation(fields: [userId], references: [id])
   admin   Admin?  @relation(fields: [adminId], references: [id])
   adminId String?
+}
+
+/// Stripe Products & roles
+model Product {
+  id          String  @id // e.g., prod_123
+  active      Boolean @default(true)
+  name        String
+  description String?
+  prices      Price[] // Added this back so a product can find its prices
+}
+
+model Price {
+  id            String         @id // e.g., price_123 (Stripe Price ID goes here!)
+  productId     String
+  product       Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  interval      String // month, year
+  subscriptions Subscription[] // Added this back so a price can find who is using it
+}
+
+model Subscription {
+  id                String   @id // e.g., sub_123
+  userId            String?  @unique
+  user              User?    @relation(fields: [userId], references: [id])
+  priceId           String
+  price             Price    @relation(fields: [priceId], references: [id])
+  status            String // Changed from Boolean to String to hold Stripe status strings
+  cancelAtPeriodEnd Boolean  @default(false)
+  currentPeriodEnd  DateTime
 }
 
 /// Auth roles
