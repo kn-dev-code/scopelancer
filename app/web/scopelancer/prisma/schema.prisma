@@ -142,8 +142,9 @@ model Product {
   id          String  @id // e.g., prod_123
   active      Boolean @default(true)
   name        String
-  description String?
   prices      Price[] // Added this back so a product can find its prices
+
+  @@map("product")
 }
 
 model Price {
@@ -152,6 +153,8 @@ model Price {
   product       Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
   interval      String // month, year
   subscriptions Subscription[] // Added this back so a price can find who is using it
+
+  @@map("price")
 }
 
 model Subscription {
@@ -163,6 +166,8 @@ model Subscription {
   status            String // Changed from Boolean to String to hold Stripe status strings
   cancelAtPeriodEnd Boolean  @default(false)
   currentPeriodEnd  DateTime
+
+  @@map("subscription")
 }
 
 /// Auth roles
