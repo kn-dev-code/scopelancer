@@ -30,8 +30,7 @@ model User {
   billings    Billing[]
 
   // Stripe features
-  stripeCustomerId String?       @unique
-  subscription     Subscription?
+  stripeCustomerId String? @unique
 
   @@map("user")
 }
@@ -130,44 +129,39 @@ model AppSession {
 }
 
 model Billing {
-  id      String  @id @default(cuid())
-  userId  String
-  user    User    @relation(fields: [userId], references: [id])
-  admin   Admin?  @relation(fields: [adminId], references: [id])
-  adminId String?
+  id                    String   @id @default(cuid())
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  adminId               String?
+  admin                 Admin?   @relation(fields: [adminId], references: [id])
+  stripePaymentIntentId String?  @unique
+  amount                Int
+  creditsPurchased      Int
+  createdAt             DateTime @default(now())
+
+  @@map("billing")
 }
 
 /// Stripe Products & roles
 model Product {
-  id          String  @id // e.g., prod_123
+  id          String  @id
   active      Boolean @default(true)
   name        String
-  prices      Price[] // Added this back so a product can find its prices
+  description String?
+  credits     Int
+  price       Price[]
 
   @@map("product")
 }
 
 model Price {
-  id            String         @id // e.g., price_123 (Stripe Price ID goes here!)
-  productId     String
-  product       Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
-  interval      String // month, year
-  subscriptions Subscription[] // Added this back so a price can find who is using it
+  id         String  @id
+  productId  String
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  unitAmount Int
+  currency   String  @default("usd")
 
   @@map("price")
-}
-
-model Subscription {
-  id                String   @id // e.g., sub_123
-  userId            String?  @unique
-  user              User?    @relation(fields: [userId], references: [id])
-  priceId           String
-  price             Price    @relation(fields: [priceId], references: [id])
-  status            String // Changed from Boolean to String to hold Stripe status strings
-  cancelAtPeriodEnd Boolean  @default(false)
-  currentPeriodEnd  DateTime
-
-  @@map("subscription")
 }
 
 /// Auth roles
