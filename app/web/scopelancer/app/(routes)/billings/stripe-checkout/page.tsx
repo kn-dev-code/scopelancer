@@ -1,5 +1,8 @@
+import { useTranslations } from "next-intl";
+
 const StripeCheckout = () => {
-  return <div>StripeCheckout</div>;
+  const t = useTranslations();
+  return <div>{t("stripeCheckout.title")}</div>;
 };
 
 export default StripeCheckout;

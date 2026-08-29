@@ -22,7 +22,9 @@ import { useRef, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Mic, UploadCloud } from "lucide-react";
 import { toast } from "@/components/ui/toast";
+import { useTranslations } from "next-intl";
 const NewSession = () => {
+  const t = useTranslations();
   const { audioId } = useParams();
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [isScoping, setIsScoping] = useState(false);
@@ -32,10 +34,22 @@ const NewSession = () => {
   const deliverableCount = useRef(null);
 
   const emailTone = [
-    { label: "Select an email type", value: null },
-    { label: "Professional", value: "Professional" },
-    { label: "Friendly", value: "Friendly" },
-    { label: "Direct", value: "Direct" },
+    {
+      label: t("newSession.deliverables.emailToneOptions.select"),
+      value: null,
+    },
+    {
+      label: t("newSession.deliverables.emailToneOptions.professional"),
+      value: "Professional",
+    },
+    {
+      label: t("newSession.deliverables.emailToneOptions.friendly"),
+      value: "Friendly",
+    },
+    {
+      label: t("newSession.deliverables.emailToneOptions.direct"),
+      value: "Direct",
+    },
   ];
 
   const audioFileConfig = {
@@ -80,7 +94,7 @@ const NewSession = () => {
       const fileSize = file?.size;
       if (fileSize > audioTool.fileSize) {
         toast.add({
-          title: "File is too large",
+          title: t("newSession.fileTooLarge"),
           type: "error",
         });
       }
@@ -100,7 +114,7 @@ const NewSession = () => {
           href="/dashboard"
           className="text-[#7F848D] text-sm hover:text-white transition-all duration-300 ease-in-out pb-5 w-[20%]"
         >
-          ← Back to Dashboard
+          {t("newSession.backToDashboard")}
         </Link>
         <div>
           <div className="flex flex-row pr-7 gap-x-2">
@@ -110,11 +124,10 @@ const NewSession = () => {
             </div>
             {/* Text container */}
             <div className="flex justify-center flex-col">
-              <h1 className="text-white font-bold text-xl">New Session</h1>
-              <p className="text-[#828B97]">
-                Upload a client call and we'll transcribe it, extract the scope,
-                and draft the recap.
-              </p>
+              <h1 className="text-white font-bold text-xl">
+                {t("newSession.title")}
+              </h1>
+              <p className="text-[#828B97]">{t("newSession.subtitle")}</p>
             </div>
           </div>
         </div>
@@ -125,10 +138,10 @@ const NewSession = () => {
             <div className="p-7 w-3xl border-2 border-[#202735] bg-[#0D1624] rounded-2xl">
               {/* Headers */}
               <FieldLabel className="text-white font-bold">
-                Recording
+                {t("newSession.recording.label")}
               </FieldLabel>
               <FieldLabel className="text-[#7F848D] text-sm">
-                MP3, WAV or M4A up to 500 MB.
+                {t("newSession.recording.hint")}
               </FieldLabel>
               <span className="text-[#0D1624]">-</span>
               {/* Form Input */}
@@ -153,15 +166,17 @@ const NewSession = () => {
               <FieldSet>
                 <FieldGroup>
                   <FieldLabel className="text-white font-bold">
-                    Session details
+                    {t("newSession.sessionDetails.label")}
                   </FieldLabel>
                   <div className="flex flex-row justify-center gap-x-4">
                     <Field>
                       <FieldLabel id="session-name" className="text-[#7F848D]">
-                        Session Title
+                        {t("newSession.sessionDetails.titleLabel")}
                       </FieldLabel>
                       <Input
-                        placeholder="Kickoff call -- Acme redesign"
+                        placeholder={t(
+                          "newSession.sessionDetails.titlePlaceholder",
+                        )}
                         id="session-name"
                         type="text"
                         className="bg-[#09101E] border border-[#272C39] rounded-sm p-5 text-white"
@@ -172,11 +187,13 @@ const NewSession = () => {
                         id="session-client"
                         className="text-[#7F848D]"
                       >
-                        Client
+                        {t("newSession.sessionDetails.clientLabel")}
                       </FieldLabel>
                       <Input
                         id="session-client"
-                        placeholder="Acme Inc."
+                        placeholder={t(
+                          "newSession.sessionDetails.clientPlaceholder",
+                        )}
                         type="text"
                         className="bg-[#09101E] border border-[#272C39] rounded-sm p-5 text-white"
                       />
@@ -184,11 +201,13 @@ const NewSession = () => {
                   </div>
                   <Field>
                     <FieldLabel className="text-[#7F848D]">
-                      Context for the model (optional)
+                      {t("newSession.sessionDetails.contextLabel")}
                     </FieldLabel>
                     <Textarea
                       className="border border-[#272C39] bg-[#09101E] placeholder:text-[#7F848D] rounded-sm text-white"
-                      placeholder="Fixed budget, 6-week timeline, no native mobile work."
+                      placeholder={t(
+                        "newSession.sessionDetails.contextPlaceholder",
+                      )}
                     />
                   </Field>
                 </FieldGroup>
@@ -201,7 +220,7 @@ const NewSession = () => {
               <FieldSet>
                 <FieldGroup>
                   <FieldLabel className="text-white font-bold">
-                    Deliverables
+                    {t("newSession.deliverables.label")}
                   </FieldLabel>
                   {/* Settings 1-2 */}
                   <div className="flex flex-row justify-center gap-x-4">
@@ -211,10 +230,10 @@ const NewSession = () => {
                     >
                       <Field>
                         <FieldLabel className="text-white font-bold">
-                          Transcript
+                          {t("newSession.deliverables.transcript.title")}
                         </FieldLabel>
                         <FieldDescription className="text-[#7F848D]">
-                          Speaker-labelled, timestamped
+                          {t("newSession.deliverables.transcript.description")}
                         </FieldDescription>
                       </Field>
                     </Button>
@@ -224,10 +243,12 @@ const NewSession = () => {
                     >
                       <Field>
                         <FieldLabel className="text-white font-bold">
-                          Scope document
+                          {t("newSession.deliverables.scopeDocument.title")}
                         </FieldLabel>
                         <FieldDescription className="text-[#7F848D]">
-                          Deliverables, exclusions, assumptions
+                          {t(
+                            "newSession.deliverables.scopeDocument.description",
+                          )}
                         </FieldDescription>
                       </Field>
                     </Button>
@@ -240,10 +261,10 @@ const NewSession = () => {
                     >
                       <Field>
                         <FieldLabel className="text-white font-bold">
-                          Flow Diagram
+                          {t("newSession.deliverables.flowDiagram.title")}
                         </FieldLabel>
                         <FieldDescription className="text-[#7F848D]">
-                          Visual map of the requested system
+                          {t("newSession.deliverables.flowDiagram.description")}
                         </FieldDescription>
                       </Field>
                     </Button>
@@ -253,22 +274,28 @@ const NewSession = () => {
                     >
                       <Field>
                         <FieldLabel className="text-white font-bold">
-                          Follow-up email
+                          {t("newSession.deliverables.followUpEmail.title")}
                         </FieldLabel>
                         <FieldDescription className="text-[#7F848D]">
-                          Ready-to-send recap draft
+                          {t(
+                            "newSession.deliverables.followUpEmail.description",
+                          )}
                         </FieldDescription>
                       </Field>
                     </Button>
                   </div>
-                  <FieldLabel className="text-[#7F848D]">Email tone</FieldLabel>
+                  <FieldLabel className="text-[#7F848D]">
+                    {t("newSession.deliverables.emailToneLabel")}
+                  </FieldLabel>
                   <Select items={emailTone}>
                     <SelectTrigger className="bg-[#08111E] w-[30%] hover:border hover:border-[#00B2F9]">
                       <SelectValue className="text-white" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Email Style</SelectLabel>
+                        <SelectLabel>
+                          {t("newSession.deliverables.emailStyleGroupLabel")}
+                        </SelectLabel>
                         {Object.entries(emailTone).map(([key, value]) => (
                           <SelectItem key={key} value={value}>
                             {value.label}
@@ -281,12 +308,12 @@ const NewSession = () => {
               </FieldSet>
             </div>
             <div>
-              <p>Estimated cost</p>
+              <p>{t("newSession.estimatedCost")}</p>
               <Link href="/dashboard">
-                <Button>Cancel</Button>
+                <Button>{t("common.cancel")}</Button>
               </Link>
               <Link href="">
-                <Button type="submit">Start Session</Button>
+                <Button type="submit">{t("newSession.startSession")}</Button>
               </Link>
             </div>
           </form>

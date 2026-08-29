@@ -18,86 +18,81 @@ import {
   Coins,
   Check,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 export default function HomeLayout() {
+  const t = useTranslations();
   const stages = {
     stage1: {
       icon: <Mic />,
       stageNum: "1",
-      title: "Upload the recording",
-      description:
-        "Drop in the audio from your kickoff call — mp3, m4a, wav, webm.",
+      title: t("section_1.stages.stage1.title"),
+      description: t("section_1.stages.stage1.description"),
     },
     stage2: {
       icon: <FileText />,
       stageNum: "2",
-      title: "Transcribe & parse",
-      description:
-        "Groq Whisper transcribes; a strict schema captures scope, variables, and deadlines.",
+      title: t("section_1.stages.stage2.title"),
+      description: t("section_1.stages.stage2.description"),
     },
     stage3: {
       icon: <GitBranch />,
       stageNum: "3",
-      title: "Diagram the scope",
-      description:
-        "Claude Sonnet turns the parsed scope into a Mermaid architecture diagram.",
+      title: t("section_1.stages.stage3.title"),
+      description: t("section_1.stages.stage3.description"),
     },
     stage4: {
       icon: <Mail />,
       stageNum: "4",
-      title: "Draft the follow-up",
-      description:
-        "A multi-day email sequence in your own tone, ready to review and send.",
+      title: t("section_1.stages.stage4.title"),
+      description: t("section_1.stages.stage4.description"),
     },
   };
 
   const benefits = {
     benefit1: {
       icon: <ShieldCheck />,
-      title: "Strict structured output",
-      description:
-        "Every scope, deliverable, and deadline is validated against a schema — no vibes-based summaries.",
+      title: t("features.benefit1.title"),
+      description: t("features.benefit1.description"),
     },
     benefit2: {
       icon: <Zap />,
-      title: "Streaming pipeline",
-      description:
-        "Results appear as each stage finishes — transcript, scope, diagram, emails.",
+      title: t("features.benefit2.title"),
+      description: t("features.benefit2.description"),
     },
     benefit3: {
       icon: <Coins />,
-      title: "Pay only for what you use",
-      description:
-        "Prepaid credits metered against real audio minutes and tokens. Unused holds are refunded.",
+      title: t("features.benefit3.title"),
+      description: t("features.benefit3.description"),
     },
   };
 
   const cards = {
     card1: {
-      title: "Starter",
-      credits: "1000",
-      price: "$19",
+      title: t("section_2.cards.card1.title"),
+      credits: t("section_2.cards.card1.credits"),
+      price: t("section_2.cards.card1.price"),
       icon: <Check />,
-      desc1: "~10 short sessions",
-      desc2: "Full pipeline access",
-      desc3: "Email support",
+      desc1: t("section_2.cards.card1.desc1"),
+      desc2: t("section_2.cards.card1.desc2"),
+      desc3: t("section_2.cards.card1.desc3"),
     },
     card2: {
-      title: "Studio",
-      credits: "3000",
-      price: "$49",
+      title: t("section_2.cards.card2.title"),
+      credits: t("section_2.cards.card2.credits"),
+      price: t("section_2.cards.card2.price"),
       icon: <Check />,
-      desc1: "~35 short sessions",
-      desc2: "Full pipeline access",
-      desc3: "Priority processing",
+      desc1: t("section_2.cards.card2.desc1"),
+      desc2: t("section_2.cards.card2.desc2"),
+      desc3: t("section_2.cards.card2.desc3"),
     },
     card3: {
-      title: "Agency",
-      credits: "8000",
-      price: "$119",
+      title: t("section_2.cards.card3.title"),
+      credits: t("section_2.cards.card3.credits"),
+      price: t("section_2.cards.card3.price"),
       icon: <Check />,
-      desc1: "~100 sessions",
-      desc2: "Team seats",
-      desc3: "Priority support",
+      desc1: t("section_2.cards.card3.desc1"),
+      desc2: t("section_2.cards.card3.desc2"),
+      desc3: t("section_2.cards.card3.desc3"),
     },
   };
   return (
@@ -107,34 +102,34 @@ export default function HomeLayout() {
         <nav className="flex flex-row justify-between text-center items-center bg-[#060D1A] h-16 max-w-full mx-auto px-[12%]">
           <h2 className="text-white font-bold text-2xl flex flex-row items-center gap-x-2">
             <WaypointsIcon />
-            Scopelancer
+            {t("nav.software_title")}
           </h2>
           <div className="flex flex-row gap-4 items-center">
             <Link href="#how-it-works">
               <span className="text-[#89929E] hover:text-white transition-all duration-300">
-                How it works
+                {t("nav.how_it_works")}
               </span>
             </Link>
             <Link href="#features">
               <span className="text-[#89929E] hover:text-white transition-all duration-300">
-                Features
+                {t("nav.features")}
               </span>
             </Link>
             <Link href="#pricing">
               <span className="text-[#89929E] hover:text-white transition-all duration-300">
-                Pricing
+                {t("nav.pricing")}
               </span>
             </Link>
           </div>
           <div className="flex flex-row gap-x-4 text-center items-center">
             <Link href="/auth/sign-in">
               <h2 className="text-[#89929E] text-sm font-semibold hover:text-white transition-all duration-300">
-                Sign in
+                {t("nav.sign-in")}
               </h2>
             </Link>
             <Link href="/auth/sign-up">
               <Button className="bg-[#00B2F9] text-black h-10 hover:bg-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer">
-                Get started
+                {t("nav.get-started")}
               </Button>
             </Link>
           </div>
@@ -143,22 +138,17 @@ export default function HomeLayout() {
         {/* Main content */}
         <main className="flex flex-col justify-center items-center self-center text-center space-y-6 bg-linear-to-b from-[#082940] to-transparent to-[24px] bg-padding-box pt-6 px-6 pb-6 w-full border-2 border-[#121825]">
           <Card className="flex flex-row items-center self-center text-center justify-center text-sm text-[#89929E] bg-[#0C192B] w-[30%] h-8">
-            <p className="text-[#00B2F9] text-lg">●</p> For freelancers who are
-            done with scope creep
+            <p className="text-[#00B2F9] text-lg">●</p> {t("main.badge")}
           </Card>
 
           <h1 className="text-white text-6xl font-bold w-[65%] tracking-normal">
-            The scope you agreed to in the room,{" "}
+            {t("main.header")}{" "}
           </h1>
           <h1 className="text-[#00B2F9] text-6xl font-bold w-[65%] tracking-normal">
-            defended in writing.
+            {t("main.additionalHeader")}
           </h1>
 
-          <p className="text-[#89929E] w-[45%]">
-            Upload a client kickoff call. Scopelancer transcribes it, extracts
-            the real project scope and deadlines, diagrams it, and drafts a
-            strategic follow-up sequence in your own tone.
-          </p>
+          <p className="text-[#89929E] w-[45%]">{t("main.description")}</p>
           {/* Buttons */}
           <div className="flex flex-row gap-x-2 text-center justify-center self-center">
             <Link
@@ -166,7 +156,7 @@ export default function HomeLayout() {
               href="/auth/sign-up"
             >
               <Button className="bg-[#00B2F9] h-10 w-[60%] text-black hover:bg-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer">
-                Start a session →
+                {t("main.start-session")}
               </Button>
             </Link>
             <Link
@@ -174,7 +164,7 @@ export default function HomeLayout() {
               href="#how-it-works"
             >
               <Button className="bg-[#0A1423] h-10 w-[55%] text-white hover:bg-[#0A1423]/80 transition-all duration-300 hover:cursor-pointer">
-                See how it works
+                {t("main.see-how-it-works")}
               </Button>
             </Link>
           </div>
@@ -186,18 +176,17 @@ export default function HomeLayout() {
             width={1000}
             height={1000}
             style={{ objectFit: "contain" }}
-            alt="picture of dashboard"
+            alt={t("main.dashboardAlt")}
           />
         </main>
         {/* More information & features */}
         <section id="how-it-works" className="py-20 border-2 border-[#121825]">
           <div className="flex flex-col justify-center pl-10 pb-10">
             <h1 className="text-white text-4xl font-bold w-[50%] tracking-normal">
-              From an hour-long call to defensible artifact
+              {t("section_1.title")}
             </h1>
             <p className="text-[#89929E] w-[50%]">
-              Four deterministic stages. Each one streams back into your
-              dashboard as it completes.
+              {t("section_1.description")}
             </p>
           </div>
 
@@ -254,11 +243,10 @@ export default function HomeLayout() {
         <section id="pricing" className="border-2 border-[#121825] py-16">
           <div className="pl-14 py-10">
             <h1 className="text-white text-4xl font-bold tracking-normal w-[50%]">
-              Prepaid credits. No subscriptions.
+              {t("section_2.title")}
             </h1>
             <p className="text-[#89929E] w-[50%]">
-              Each run is metered against real usage — audio minutes and tokens.
-              Unused holds are refunded.
+              {t("section_2.description")}
             </p>
           </div>
 
@@ -277,7 +265,7 @@ export default function HomeLayout() {
                       {card.credits}
                     </CardTitle>
                     <CardDescription className="mt-2 ml-2">
-                      credits
+                      {t("section_2.credits")}
                     </CardDescription>
                   </div>
                   <CardDescription className="text-white font-bold text-3xl">
@@ -299,7 +287,7 @@ export default function HomeLayout() {
                   </ul>
                 </CardHeader>
                 <Button className="ml-[10%] bg-[#0A1423] border-2 border-[#1E2635] rounded-md h-11 w-[80%]">
-                  Buy pack
+                  {t("section_2.buy_pack")}
                 </Button>
               </Card>
             ))}
@@ -310,18 +298,17 @@ export default function HomeLayout() {
         <section className="border-2 border-[#121825] py-20">
           <div className="flex flex-col items-center self-center text-center gap-y-4">
             <h1 className="text-white text-4xl font-bold tracking-normal">
-              Stop rewriting scope from memory.
+              {t("section_3.title")}
             </h1>
             <p className="text-[#89929E] w-[40%]">
-              Turn your next client call into a documented, diagrammed, and
-              defended scope in minutes.
+              {t("section_3.description")}
             </p>
             <Link
               className="bg-[#00B2F9] text-black h-11 w-[15%] transition-all duration-300 hover:cursor-pointer rounded-2xl"
               href="/auth/sign-up"
             >
               <Button className="bg-[#00B2F9] text-black h-11 w-[15%] hover:bg-[#00B2F9]/80 transition-all duration-300 rounded-2xl hover:cursor-pointer">
-                Start your first session →
+                {t("section_3.start_your_first_session")}
               </Button>
             </Link>
           </div>
@@ -332,10 +319,12 @@ export default function HomeLayout() {
           <div className="flex flex-row items-center justify-between w-full px-[12%]">
             <div className="flex flex-row items-center gap-x-2">
               <WaypointsIcon color="white" />
-              <h2 className="text-white text-md font-bold">Scopelancer</h2>
+              <h2 className="text-white text-md font-bold">
+                {t("footer.title")}
+              </h2>
             </div>
             <span className="text-[#89929E] text-sm">
-              © 2026 Scopelancer. All rights reserved.
+              {t("footer.footer_description")}
             </span>
           </div>
         </footer>

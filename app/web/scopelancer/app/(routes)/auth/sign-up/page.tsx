@@ -15,13 +15,15 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createAuthClient } from "better-auth/client";
+import { useTranslations } from "next-intl";
 const SignUp = () => {
+  const t = useTranslations();
   const authClient = createAuthClient();
 
   const formSchema = z.object({
-    name: z.string().min(1, "Name must be at least one character"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(8, "Password must be at least 8 characters long"),
+    name: z.string().min(1, t("auth.errors.nameMin")),
+    email: z.string().email(t("auth.errors.emailInvalid")),
+    password: z.string().min(8, t("auth.errors.passwordMin")),
   });
 
   type registerUser = z.infer<typeof formSchema>;
@@ -64,37 +66,41 @@ const SignUp = () => {
       <div className="flex flex-row items-center justify-center pr-[20%] pt-12 gap-x-2 rounded-xl">
         <WaypointsIcon className="text-white text-2xl" />
         <Link className="text-white text-2xl" href="/">
-          Scopelancer
+          {t("auth.logoTitle")}
         </Link>
       </div>
       <main className="w-full flex flex-col items-center justify-center pt-3">
         {/* Sign in container */}
         <div className="flex flex-col self-center bg-[#0D1726] border-2 border-[#202A38] w-[30%] p-7 rounded-2xl">
-          <h2 className="text-2xl font-bold text-white">Create your account</h2>
-          <p className="text-sm text-[#89929E]">
-            Start turning kickoff calls into documented scope.
-          </p>
+          <h2 className="text-2xl font-bold text-white">
+            {t("auth.signUp.title")}
+          </h2>
+          <p className="text-sm text-[#89929E]">{t("auth.signUp.subtitle")}</p>
           <Button
             className="bg-[#0E1727] border-2 border-[#202A38] text-white transition-all duration-300 hover:cursor-pointer font-semibold h-11 mt-4 hover:bg-[#00B2F9] hover:scale-95"
             onClick={() => handleSignUp("google")}
           >
-            Continue with Google
+            {t("auth.continueWithGoogle")}
           </Button>
           <Button
             className="bg-[#0E1727] border-2 border-[#202A38] text-white transition-all duration-300 hover:cursor-pointer font-semibold h-11 mt-4 hover:bg-[#00B2F9] hover:scale-95"
             onClick={() => handleSignUp("github")}
           >
-            Continue with GitHub
+            {t("auth.continueWithGithub")}
           </Button>
-          <span className="text-[#89929E] text-sm mt-4 text-center">or</span>
+          <span className="text-[#89929E] text-sm mt-4 text-center">
+            {t("auth.or")}
+          </span>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FieldSet>
               <FieldGroup className="flex flex-col text-center">
                 <Field className="relative">
-                  <FieldLabel className="text-[#89929E]">Name</FieldLabel>
+                  <FieldLabel className="text-[#89929E]">
+                    {t("auth.nameLabel")}
+                  </FieldLabel>
                   <Input
                     className="bg-[#09101E] border-2 border-[#202A38] rounded-md placeholder:font-bold h-11 text-white"
-                    placeholder="John Doe"
+                    placeholder={t("auth.namePlaceholder")}
                     id="email"
                     {...form.register("email")}
                   />
@@ -103,10 +109,12 @@ const SignUp = () => {
                   </FieldError>
                 </Field>
                 <Field className="relative">
-                  <FieldLabel className="text-[#89929E]">Email</FieldLabel>
+                  <FieldLabel className="text-[#89929E]">
+                    {t("auth.emailLabel")}
+                  </FieldLabel>
                   <Input
                     className="bg-[#09101E] border-2 border-[#202A38] rounded-md placeholder:font-bold h-11 text-white"
-                    placeholder="you@studio.com"
+                    placeholder={t("auth.emailPlaceholder")}
                     id="email"
                     {...form.register("email")}
                   />
@@ -116,10 +124,12 @@ const SignUp = () => {
                 </Field>
 
                 <Field className="relative">
-                  <FieldLabel className="text-[#89929E]">Password</FieldLabel>
+                  <FieldLabel className="text-[#89929E]">
+                    {t("auth.passwordLabel")}
+                  </FieldLabel>
                   <Input
                     className="bg-[#09101E] border-2 border-[#202A38] rounded-md placeholder:text-2xl h-11 text-white"
-                    placeholder="........"
+                    placeholder={t("auth.passwordPlaceholder")}
                     id="password"
                     {...form.register("password")}
                   />
@@ -129,24 +139,28 @@ const SignUp = () => {
                 </Field>
 
                 <FieldDescription>
-                  <Link href="/auth/forgot-passsword">Forgot password?</Link>
+                  <Link href="/auth/forgot-passsword">
+                    {t("auth.forgotPassword")}
+                  </Link>
                 </FieldDescription>
                 <Button
                   className="bg-[#00B2F9] text-black hover:bg-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer h-10"
                   type="submit"
                 >
-                  Sign in →
+                  {t("auth.signUp.submit")}
                 </Button>
               </FieldGroup>
             </FieldSet>
           </form>
           <div className="flex flex-row gap-x-2 text-sm text-center justify-center mt-4">
-            <span className="text-[#89929E]">Already have an account?</span>
+            <span className="text-[#89929E]">
+              {t("auth.signUp.haveAccount")}
+            </span>
             <Link
               className="text-[#00B2F9] hover:text-[#00B2F9]/80 transition-all duration-300 hover:cursor-pointer"
               href="/auth/sign-in"
             >
-              Sign In
+              {t("auth.signUp.signInLink")}
             </Link>
           </div>
         </div>

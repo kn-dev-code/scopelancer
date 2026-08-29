@@ -1,4 +1,98 @@
 {
+  "nav": {
+    "software_title": "Scopelancer",
+    "how_it_works": "How it works",
+    "features": "Features",
+    "pricing": "Pricing",
+    "sign-in": "Sign in",
+    "get-started": "Get started"
+  },
+  "main": {
+    "badge": "For freelancers who are done with scope creep",
+    "header": "The scope you agreed to in the room,",
+    "additionalHeader": "defended in writing.",
+    "description": "Upload a client kickoff call. Scopelancer transcribes it, extracts the real project scope and deadlines, diagrams it, and drafts a strategic follow-up sequence in your own tone.",
+    "start-session": "Start a session →",
+    "see-how-it-works": "See how it works",
+    "dashboardAlt": "picture of dashboard"
+  },
+  "section_1": {
+    "title": "From an hour-long call to defensible artifact",
+    "description": "Four deterministic stages. Each one streams back into your dashboard as it completes.",
+    "stages": {
+      "stage1": {
+        "title": "Upload the recording",
+        "description": "Drop in the audio from your kickoff call — mp3, m4a, wav, webm."
+      },
+      "stage2": {
+        "title": "Transcribe & parse",
+        "description": "Groq Whisper transcribes; a strict schema captures scope, variables, and deadlines."
+      },
+      "stage3": {
+        "title": "Diagram the scope",
+        "description": "Claude Sonnet turns the parsed scope into a Mermaid architecture diagram."
+      },
+      "stage4": {
+        "title": "Draft the follow-up",
+        "description": "A multi-day email sequence in your own tone, ready to review and send."
+      }
+    }
+  },
+  "features": {
+    "benefit1": {
+      "title": "Strict structured output",
+      "description": "Every scope, deliverable, and deadline is validated against a schema — no vibes-based summaries."
+    },
+    "benefit2": {
+      "title": "Streaming pipeline",
+      "description": "Results appear as each stage finishes — transcript, scope, diagram, emails."
+    },
+    "benefit3": {
+      "title": "Pay only for what you use",
+      "description": "Prepaid credits metered against real audio minutes and tokens. Unused holds are refunded."
+    }
+  },
+  "section_2": {
+    "title": "Prepaid credits. No subscriptions.",
+    "description": "Each run is metered against real usage - audio minutes and tokens. Unused holds are refunded.",
+    "credits": "credits",
+    "buy_pack": "Buy pack",
+    "cards": {
+      "card1": {
+        "title": "Starter",
+        "credits": "1000",
+        "price": "$19",
+        "desc1": "~10 short sessions",
+        "desc2": "Full pipeline access",
+        "desc3": "Email support"
+      },
+      "card2": {
+        "title": "Studio",
+        "credits": "3000",
+        "price": "$49",
+        "desc1": "~35 short sessions",
+        "desc2": "Full pipeline access",
+        "desc3": "Priority processing"
+      },
+      "card3": {
+        "title": "Agency",
+        "credits": "8000",
+        "price": "$119",
+        "desc1": "~100 sessions",
+        "desc2": "Team seats",
+        "desc3": "Priority support"
+      }
+    }
+  },
+  "section_3": {
+    "title": "Stop rewriting scope from memory.",
+    "description": "Turn your next client call into a documented, diagrammed, and defended scope in minutes.",
+    "start_your_first_session": "Start your first session →"
+  },
+  "footer": {
+    "title": "Scopelancer",
+    "footer_description": "© 2026 Scopelancer. All rights reserved."
+  },
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong.",
@@ -18,10 +112,140 @@
   "status": {
     "running": "Running",
     "failed": "Failed",
-    "Completed": "Completed"
+    "completed": "Completed",
+    "diagramming": "Diagramming"
   },
   "agents": {
     "newChat": "New chat"
   },
-  "": {}
+  "dashboard": {
+    "welcomeBack": "Welcome back, {name}",
+    "subtitle": "Turn your client calls into scope you can defend in writing.",
+    "newSession": "+ New Session",
+    "loading": "Loading...",
+    "cards": {
+      "totalSessions": {
+        "title": "Total Sessions",
+        "message": "Across all clients"
+      },
+      "activeRuns": {
+        "title": "Active runs",
+        "message": "Currently processing"
+      },
+      "completed": {
+        "title": "Completed",
+        "message": "Scope documented"
+      },
+      "credits": {
+        "title": "Credits",
+        "message": "Available balance"
+      }
+    },
+    "recentSessions": {
+      "title": "Recent sessions",
+      "totalCount": "{count} total"
+    }
+  },
+  "sessions": {
+    "title": "Sessions",
+    "subtitle": "Every client call you've turned into documented scope.",
+    "newSession": "+ New Session"
+  },
+  "billings": {
+    "title": "Billing",
+    "subtitle": "Prepaid credits. Each run is metered against real usage — audio minutes and tokens — and unused holds are refunded.",
+    "availableBalance": "Available balance",
+    "creditPacksTitle": "Credit packs",
+    "popular": "Popular",
+    "creditsLabel": "credits",
+    "buyPack": "Buy pack",
+    "packs": {
+      "starter": "Starter",
+      "studio": "Studio",
+      "agency": "Agency"
+    }
+  },
+  "stripeCheckout": {
+    "title": "Stripe checkout"
+  },
+  "auth": {
+    "logoTitle": "Scopelancer",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithGithub": "Continue with GitHub",
+    "or": "or",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@studio.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "........",
+    "forgotPassword": "Forgot password?",
+    "nameLabel": "Name",
+    "namePlaceholder": "John Doe",
+    "errors": {
+      "emailInvalid": "Invalid email address",
+      "passwordMin": "Password must be at least 8 characters long",
+      "nameMin": "Name must be at least one character"
+    },
+    "signIn": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to defend your next client scope.",
+      "submit": "Sign in →",
+      "noAccount": "New to Scopelancer?",
+      "createAccount": "Create an account"
+    },
+    "signUp": {
+      "title": "Create your account",
+      "subtitle": "Start turning kickoff calls into documented scope.",
+      "submit": "Sign in →",
+      "haveAccount": "Already have an account?",
+      "signInLink": "Sign In"
+    }
+  },
+  "newSession": {
+    "backToDashboard": "← Back to Dashboard",
+    "title": "New Session",
+    "subtitle": "Upload a client call and we'll transcribe it, extract the scope, and draft the recap.",
+    "recording": {
+      "label": "Recording",
+      "hint": "MP3, WAV or M4A up to 500 MB."
+    },
+    "sessionDetails": {
+      "label": "Session details",
+      "titleLabel": "Session Title",
+      "titlePlaceholder": "Kickoff call -- Acme redesign",
+      "clientLabel": "Client",
+      "clientPlaceholder": "Acme Inc.",
+      "contextLabel": "Context for the model (optional)",
+      "contextPlaceholder": "Fixed budget, 6-week timeline, no native mobile work."
+    },
+    "deliverables": {
+      "label": "Deliverables",
+      "transcript": {
+        "title": "Transcript",
+        "description": "Speaker-labelled, timestamped"
+      },
+      "scopeDocument": {
+        "title": "Scope document",
+        "description": "Deliverables, exclusions, assumptions"
+      },
+      "flowDiagram": {
+        "title": "Flow Diagram",
+        "description": "Visual map of the requested system"
+      },
+      "followUpEmail": {
+        "title": "Follow-up email",
+        "description": "Ready-to-send recap draft"
+      },
+      "emailToneLabel": "Email tone",
+      "emailStyleGroupLabel": "Email Style",
+      "emailToneOptions": {
+        "select": "Select an email type",
+        "professional": "Professional",
+        "friendly": "Friendly",
+        "direct": "Direct"
+      }
+    },
+    "estimatedCost": "Estimated cost",
+    "startSession": "Start Session",
+    "fileTooLarge": "File is too large"
+  }
 }

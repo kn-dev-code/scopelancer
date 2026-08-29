@@ -19,9 +19,11 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { api } from "@/lib/axios/api";
 import { toast } from "@/components/ui/toast";
+import { useTranslations } from "next-intl";
 
 const Session = () => {
   const router = useRouter();
+  const t = useTranslations();
   const [addingSession, setAddingSession] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const queryClient = useQueryClient();
@@ -140,17 +142,19 @@ const Session = () => {
           {/* Welcome and small description container */}
           <div className="flex flex-col justify-between w-[85%] relative left-0 bottom-14">
             {/* Will render later for user's name */}
-            <h1 className="text-white text-2xl font-bold">Sessions</h1>
+            <h1 className="text-white text-2xl font-bold">
+              {t("sessions.title")}
+            </h1>
             <div className="flex flex-row justify-self-center justify-between">
               <span className="text-[#9199A2] text-sm">
-                Every client call you've turned into documented scope.
+                {t("sessions.subtitle")}
               </span>
               <div className="relative left-[20%] bottom-4">
                 <Button
                   onClick={handleAddingSession}
                   className="bg-[#2EA2E6] text-black rounded-lg h-10 hover:bg-[#2EA2E6]/80 hover:cursor-pointer"
                 >
-                  + New Session
+                  {t("sessions.newSession")}
                 </Button>
               </div>
             </div>

@@ -9,21 +9,23 @@ import SideBar from "../pages/sidebar";
 import { CoinsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const Billing = () => {
+  const t = useTranslations();
   const creditPacks = {
     starterPack: {
-      name: "Starter" as string,
+      name: t("billings.packs.starter"),
       credits: "1,000" as string,
       price: "$19" as string,
     },
     studioPack: {
-      name: "Studio" as string,
+      name: t("billings.packs.studio"),
       credits: "3,000" as string,
       price: "$49" as string,
     },
     agencyPack: {
-      name: "Agency" as string,
+      name: t("billings.packs.agency"),
       credits: "8,000" as string,
       price: "$119" as string,
     },
@@ -43,10 +45,11 @@ const Billing = () => {
         <main className="flex-1 p-8 max-w-6xl w-full mx-auto space-y-8">
           {/* Header Section */}
           <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">Billing</h1>
+            <h1 className="text-2xl font-bold tracking-tight">
+              {t("billings.title")}
+            </h1>
             <p className="text-[#9199A2] text-sm max-w-3xl">
-              Prepaid credits. Each run is metered against real usage — audio
-              minutes and tokens — and unused holds are refunded.
+              {t("billings.subtitle")}
             </p>
           </div>
 
@@ -58,7 +61,7 @@ const Billing = () => {
               </div>
               <div>
                 <p className="text-[#9199A2] text-xs font-medium uppercase tracking-wider">
-                  Available balance
+                  {t("billings.availableBalance")}
                 </p>
                 <p className="text-3xl font-bold mt-1">1,840</p>
               </div>
@@ -67,7 +70,9 @@ const Billing = () => {
 
           {/* Credit Packs Section */}
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold">Credit packs</h2>
+            <h2 className="text-lg font-semibold">
+              {t("billings.creditPacksTitle")}
+            </h2>
 
             {/* Responsive 3-Column Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -82,7 +87,7 @@ const Billing = () => {
                   >
                     {isPopular && (
                       <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0090FF] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
-                        Popular
+                        {t("billings.popular")}
                       </span>
                     )}
 
@@ -95,7 +100,7 @@ const Billing = () => {
                           {pack.credits}
                         </span>
                         <span className="text-sm text-[#9199A2] ml-1.5">
-                          credits
+                          {t("billings.creditsLabel")}
                         </span>
                       </div>
                       <p className="text-2xl font-bold">{pack.price}</p>
@@ -109,7 +114,7 @@ const Billing = () => {
                             : "bg-[#0A0E13] hover:bg-[#181F26] border border-[#262B30] text-white"
                         }`}
                       >
-                        Buy pack
+                        {t("billings.buyPack")}
                       </Button>
                     </Link>
                   </Card>
