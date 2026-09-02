@@ -26,11 +26,8 @@ import { useTranslations } from "next-intl";
 const NewSession = () => {
   const t = useTranslations();
   const { audioId } = useParams();
-  const [isTranscribing, setIsTranscribing] = useState(false);
-  const [isScoping, setIsScoping] = useState(false);
-  const [isDiagramming, setIsDiagramming] = useState(false);
-  const [isEmailing, setIsEmailing] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [tools, setTools] = useState<string[]>(["transcribe"]);
   const deliverableCount = useRef(null);
 
   const emailTone = [
@@ -55,55 +52,83 @@ const NewSession = () => {
   const audioFileConfig = {
     MP3: {
       audioType: "MP3",
-      fileSize: 500,
       startsWith: ".mp3",
     },
     WAV: {
       audioType: "WAV",
-      fileSize: 500,
       startsWith: ".wav",
     },
     M4A: {
       audioType: "M4A",
-      fileSize: 500,
       startsWith: ".m4a",
     },
   } as const;
 
   const LLMToolCost = {
     transcribe: {
-      cost: 0.2,
+      costperMinute: 0.2,
     },
     "scope-document": {
-      cost: 0.1,
+      baseCost: 0.1,
     },
     "flow-diagram": {
-      cost: 0.12,
+      baseCost: 0.12,
     },
     email: {
-      cost: 0.08,
+      baseCost: 0.08,
     },
-  };
+  } as const;
 
   const audioTool = audioFileConfig[audioId as keyof typeof audioFileConfig];
+  const MAX_FILE_SIZE_MB = 25;
 
   const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const fileType = file.name.endsWith(audioTool.startsWith);
+      // Check file type
+      const fileType = file?.name.endsWith(audioTool.startsWith);
+      // Check file size
       const fileSize = file?.size;
-      if (fileSize > audioTool.fileSize) {
+      // Is file too large?
+      if (fileSize > MAX_FILE_SIZE_MB * 1024 * 1024) {
         toast.add({
-          title: t("newSession.fileTooLarge"),
+          title: "File too large!",
           type: "error",
+          description: "Please try again",
         });
       }
       setFile(file);
     }
   };
 
-  const calculateTotalCredits = () => {
-    useEffect(() => {}, []);
+  const calculateTotalCredits = (
+    audioDurationSeconds: number,
+    selectedTools: string[],
+  ) => {
+    const audioDuration = audioDurationSeconds / 60;
+    let totalCredits = 0;
+    if (selectedTools.includes("transcribe")) {
+      totalCredits += audioDuration * LLMToolCost["transcribe"].costperMinute;
+    }
+    if (selectedTools.includes("scope-document")) {
+      totalCredits += LLMToolCost["scope-document"].baseCost;
+    }
+    if (selectedTools.includes("flow-diagram")) {
+      totalCredits += LLMToolCost["flow-diagram"].baseCost;
+    }
+    if (selectedTools.includes("email")) {
+      totalCredits += LLMToolCost["email"].baseCost;
+    }
+
+    return totalCredits;
+  };
+
+  const toggleToolInput = (toolId: string) => {
+    setTools((prev) =>
+      prev.includes(toolId)
+        ? prev.filter((id) => id !== toolId)
+        : [...prev, toolId],
+    );
   };
 
   return (
@@ -149,9 +174,7 @@ const NewSession = () => {
                 <FieldSet>
                   <FieldGroup>
                     <Input
-                      onChange={() => {
-                        handleFileInput;
-                      }}
+                      onChange={handleFileInput}
                       className="text-[#0D1624] bg-[#0D1624] placeholder:text-[#0D1624] p-20 hover:cursor-pointer hover:bg-[#0D1624]/80"
                       type="file"
                     />
@@ -225,6 +248,9 @@ const NewSession = () => {
                   {/* Settings 1-2 */}
                   <div className="flex flex-row justify-center gap-x-4">
                     <Button
+                      onClick={() => {
+                        toggleToolInput("transcript");
+                      }}
                       type="button"
                       className="border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539]"
                     >
@@ -238,6 +264,9 @@ const NewSession = () => {
                       </Field>
                     </Button>
                     <Button
+                      onClick={() => {
+                        toggleToolInput("scope-document");
+                      }}
                       type="button"
                       className="border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539]"
                     >
@@ -256,6 +285,9 @@ const NewSession = () => {
                   {/* Settings 3-4 */}
                   <div className="flex flex-row justify-center gap-x-4">
                     <Button
+                      onClick={() => {
+                        toggleToolInput("flow-diagram");
+                      }}
                       type="button"
                       className="border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539]"
                     >
@@ -269,6 +301,9 @@ const NewSession = () => {
                       </Field>
                     </Button>
                     <Button
+                      onClick={() => {
+                        toggleToolInput("email");
+                      }}
                       type="button"
                       className="border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539]"
                     >
@@ -296,9 +331,9 @@ const NewSession = () => {
                         <SelectLabel>
                           {t("newSession.deliverables.emailStyleGroupLabel")}
                         </SelectLabel>
-                        {Object.entries(emailTone).map(([key, value]) => (
-                          <SelectItem key={key} value={value}>
-                            {value.label}
+                        {emailTone.map((tone, idx) => (
+                          <SelectItem key={idx} value={tone.value || ""}>
+                            {tone.label}
                           </SelectItem>
                         ))}
                       </SelectGroup>

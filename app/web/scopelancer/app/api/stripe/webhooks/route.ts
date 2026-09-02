@@ -132,8 +132,6 @@ export async function POST(request: NextRequest) {
         }
         break;
       }
-
-      // Authentication Status
     }
   } catch (e) {
     return NextResponse.json(
