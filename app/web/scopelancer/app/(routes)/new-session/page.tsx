@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -23,6 +24,7 @@ import { useParams } from "next/navigation";
 import { Mic, UploadCloud } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 import { useTranslations } from "next-intl";
+import { z } from "zod";
 const NewSession = () => {
   const t = useTranslations();
   const { audioId } = useParams();
@@ -86,9 +88,20 @@ const NewSession = () => {
     const file = event.target.files?.[0];
     if (file) {
       // Check file type
-      const fileType = file?.name.endsWith(audioTool.startsWith);
+      const fileType =
+        file?.name.endsWith(".mp4") ||
+        file?.name.endsWith(".wav") ||
+        file?.name.endsWith(".m4a");
       // Check file size
       const fileSize = file?.size;
+      // Is file type incorrect?
+      if (file.name.endsWith(audioTool.startsWith) !== fileType) {
+        toast.add({
+          title: "Incorrect file type",
+          type: "error",
+          description: "Please try again",
+        });
+      }
       // Is file too large?
       if (fileSize > MAX_FILE_SIZE_MB * 1024 * 1024) {
         toast.add({
@@ -130,6 +143,19 @@ const NewSession = () => {
         : [...prev, toolId],
     );
   };
+
+  const SessionInput = z.object({
+    sessionTitle: z.string().min(1, "Please provide a session title"),
+    client: z.string().min(1, "Please provide a client name"),
+    context: z.string().min(1).optional(),
+    deliverables: z.enum([
+      "transcribe",
+      "scope-document",
+      "flow-diagram",
+      "email",
+    ]),
+    emailType: z.enum(["Professional", "Friendly", "Direct"]),
+  });
 
   return (
     <div className="bg-[#060D1A] font-sans w-full h-screen overflow-y-auto pt-5">
@@ -252,7 +278,7 @@ const NewSession = () => {
                         toggleToolInput("transcript");
                       }}
                       type="button"
-                      className="border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539]"
+                      className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${tools.includes("transcript") ? "bg-[#0E2539 border-[#00B2F9]" : "border-[#202735] bg-[#0D1624]"}`}
                     >
                       <Field>
                         <FieldLabel className="text-white font-bold">
@@ -268,7 +294,7 @@ const NewSession = () => {
                         toggleToolInput("scope-document");
                       }}
                       type="button"
-                      className="border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539]"
+                      className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${tools.includes("scope-document") ? "bg-[#0E2539 border-[#00B2F9]" : "border-[#202735] bg-[#0D1624]"}`}
                     >
                       <Field>
                         <FieldLabel className="text-white font-bold">
@@ -289,7 +315,7 @@ const NewSession = () => {
                         toggleToolInput("flow-diagram");
                       }}
                       type="button"
-                      className="border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539]"
+                      className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${tools.includes("flow-diagram") ? "bg-[#0E2539 border-[#00B2F9]" : "border-[#202735] bg-[#0D1624]"}`}
                     >
                       <Field>
                         <FieldLabel className="text-white font-bold">
@@ -305,7 +331,7 @@ const NewSession = () => {
                         toggleToolInput("email");
                       }}
                       type="button"
-                      className="border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539]"
+                      className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${tools.includes("email") ? "bg-[#0E2539 border-[#00B2F9]" : "border-[#202735] bg-[#0D1624]"}`}
                     >
                       <Field>
                         <FieldLabel className="text-white font-bold">
@@ -342,14 +368,16 @@ const NewSession = () => {
                 </FieldGroup>
               </FieldSet>
             </div>
-            <div>
-              <p>{t("newSession.estimatedCost")}</p>
+            <p className="text-white text-2xl">
+              {t("newSession.estimatedCost")}
+            </p>
+            <div className="flex flex-row justify-center gap-x-2">
               <Link href="/dashboard">
-                <Button>{t("common.cancel")}</Button>
+                <Button className="">{t("common.cancel")}</Button>
               </Link>
-              <Link href="">
-                <Button type="submit">{t("newSession.startSession")}</Button>
-              </Link>
+              <Button className="" type="submit">
+                {t("newSession.startSession")}
+              </Button>
             </div>
           </form>
         </div>
