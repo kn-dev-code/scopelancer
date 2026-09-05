@@ -244,7 +244,7 @@
         "direct": "Direct"
       }
     },
-    "estimatedCost": "Estimated cost",
+    "estimatedCost": "Estimated cost: ",
     "startSession": "Start Session",
     "fileTooLarge": "File is too large"
   }

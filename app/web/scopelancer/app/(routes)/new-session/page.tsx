@@ -19,18 +19,16 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
-import { useRef, useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { Mic, UploadCloud } from "lucide-react";
+import { useState } from "react";
+import { Mic, Sparkles } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 import { useTranslations } from "next-intl";
 import { z } from "zod";
 const NewSession = () => {
   const t = useTranslations();
-  const { audioId } = useParams();
   const [file, setFile] = useState<File | null>(null);
+  const [audioDuration, setAudioDuration] = useState<number>(0);
   const [tools, setTools] = useState<string[]>(["transcribe"]);
-  const deliverableCount = useRef(null);
 
   const emailTone = [
     {
@@ -51,21 +49,6 @@ const NewSession = () => {
     },
   ];
 
-  const audioFileConfig = {
-    MP3: {
-      audioType: "MP3",
-      startsWith: ".mp3",
-    },
-    WAV: {
-      audioType: "WAV",
-      startsWith: ".wav",
-    },
-    M4A: {
-      audioType: "M4A",
-      startsWith: ".m4a",
-    },
-  } as const;
-
   const LLMToolCost = {
     transcribe: {
       costperMinute: 0.2,
@@ -81,60 +64,32 @@ const NewSession = () => {
     },
   } as const;
 
-  const audioTool = audioFileConfig[audioId as keyof typeof audioFileConfig];
   const MAX_FILE_SIZE_MB = 25;
 
-  const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Check file type
-      const fileType =
-        file?.name.endsWith(".mp4") ||
-        file?.name.endsWith(".wav") ||
-        file?.name.endsWith(".m4a");
-      // Check file size
-      const fileSize = file?.size;
-      // Is file type incorrect?
-      if (file.name.endsWith(audioTool.startsWith) !== fileType) {
-        toast.add({
-          title: "Incorrect file type",
-          type: "error",
-          description: "Please try again",
-        });
-      }
-      // Is file too large?
-      if (fileSize > MAX_FILE_SIZE_MB * 1024 * 1024) {
-        toast.add({
-          title: "File too large!",
-          type: "error",
-          description: "Please try again",
-        });
-      }
-      setFile(file);
-    }
-  };
-
+  // Initialize total credits
   const calculateTotalCredits = (
     audioDurationSeconds: number,
     selectedTools: string[],
   ) => {
-    const audioDuration = audioDurationSeconds / 60;
-    let totalCredits = 0;
+    const audioDuration = Math.ceil(audioDurationSeconds / 60);
+    let cost = 0;
     if (selectedTools.includes("transcribe")) {
-      totalCredits += audioDuration * LLMToolCost["transcribe"].costperMinute;
+      cost += audioDuration * LLMToolCost["transcribe"].costperMinute;
     }
     if (selectedTools.includes("scope-document")) {
-      totalCredits += LLMToolCost["scope-document"].baseCost;
+      cost += LLMToolCost["scope-document"].baseCost;
     }
     if (selectedTools.includes("flow-diagram")) {
-      totalCredits += LLMToolCost["flow-diagram"].baseCost;
+      cost += LLMToolCost["flow-diagram"].baseCost;
     }
     if (selectedTools.includes("email")) {
-      totalCredits += LLMToolCost["email"].baseCost;
+      cost += LLMToolCost["email"].baseCost;
     }
 
-    return totalCredits;
+    return Number(cost.toFixed(2));
   };
+
+  const estimatedCost = calculateTotalCredits(audioDuration, tools);
 
   const toggleToolInput = (toolId: string) => {
     setTools((prev) =>
@@ -144,7 +99,54 @@ const NewSession = () => {
     );
   };
 
+  const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (!selectedFile) return;
+    if (selectedFile) {
+      // Check file type
+      const fileType =
+        selectedFile?.name.endsWith(".mp4") ||
+        selectedFile?.name.endsWith(".wav") ||
+        selectedFile?.name.endsWith(".m4a") ||
+        selectedFile?.name.endsWith(".mp3");
+      // Check file size
+      const fileSize = selectedFile?.size;
+      // Is file type incorrect?
+      if (!fileType) {
+        toast.add({
+          title: "Incorrect file type",
+          type: "error",
+          description: "Please upload an MP3, MP4, WAV, or M4A file.",
+        });
+      }
+
+      // Is file too large?
+      if (fileSize > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        toast.add({
+          title: "File too large!",
+          type: "error",
+          description: "Please try again",
+        });
+      }
+      if (fileType) {
+        toast.add({
+          title: "File loaded successfully",
+          type: "success",
+        });
+      }
+
+      const objectURL = URL.createObjectURL(selectedFile);
+      const audio = new Audio(objectURL);
+      audio.onloadedmetadata = () => {
+        setAudioDuration(audio.duration);
+        URL.revokeObjectURL(objectURL);
+      };
+      setFile(selectedFile);
+    }
+  };
+
   const SessionInput = z.object({
+    clientFile: z.instanceof(File, { message: "A File is required" }),
     sessionTitle: z.string().min(1, "Please provide a session title"),
     client: z.string().min(1, "Please provide a client name"),
     context: z.string().min(1).optional(),
@@ -156,6 +158,8 @@ const NewSession = () => {
     ]),
     emailType: z.enum(["Professional", "Friendly", "Direct"]),
   });
+
+  const SessionSchema = typeof SessionInput;
 
   return (
     <div className="bg-[#060D1A] font-sans w-full h-screen overflow-y-auto pt-5">
@@ -368,16 +372,33 @@ const NewSession = () => {
                 </FieldGroup>
               </FieldSet>
             </div>
-            <p className="text-white text-2xl">
-              {t("newSession.estimatedCost")}
-            </p>
-            <div className="flex flex-row justify-center gap-x-2">
-              <Link href="/dashboard">
-                <Button className="">{t("common.cancel")}</Button>
-              </Link>
-              <Button className="" type="submit">
-                {t("newSession.startSession")}
-              </Button>
+            <div className="flex flex-row justify-between gap-x-7 pt-5 pb-7">
+              <div className="flex flex-row gap-x-2">
+                <p className="text-[#5D6672] text-sm">
+                  {t("newSession.estimatedCost")}
+                </p>
+                <span className="text-white text-sm">{estimatedCost}</span>
+              </div>
+              <div className="flex pr-12 gap-x-2">
+                <Link href="/dashboard">
+                  <Button className="p-5 bg-[#0A1423] hover:scale-105 hover:bg-[#0A1423]/80 hover:duration-300 hover:transition-all border-2 border-[#151D2C] hover:cursor-pointer">
+                    {t("common.cancel")}
+                  </Button>
+                </Link>
+                <Button
+                  onClick={() =>
+                    toast.add({
+                      title: "Submission successfull!",
+                      type: "success",
+                    })
+                  }
+                  className="bg-[#00B2F9] text-black p-5 w-[85%] hover:scale-105 hover:bg-[#00B2F9]/80 hover:transition-all hover:duration-300 hover:cursor-pointer"
+                  type="submit"
+                >
+                  <Sparkles />
+                  {t("newSession.startSession")}
+                </Button>
+              </div>
             </div>
           </form>
         </div>
