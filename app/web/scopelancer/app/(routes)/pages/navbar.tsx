@@ -5,15 +5,30 @@ import Link from "next/link";
 import { client } from "@/lib/betterauth/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "@/components/ui/toast";
+import { api } from "@/lib/axios/api";
 // See why Nav bar is not redirecting
 const NavBar = () => {
   const router = useRouter();
   const { data } = client.useSession();
-  const firstInitial = data?.user?.name[0];
-  const secondInitial = data?.user?.email[0];
-  const userInitials = `${firstInitial}${secondInitial}`.toUpperCase();
+  const firstInitial = data?.user?.name[0] || "";
+  const secondInitial = data?.user?.email[0] || "";
+  const userInitials = `${firstInitial}${secondInitial}`.toUpperCase() || "U";
   const [showPanel, setShowPanel] = useState(false);
+
+  const {
+    data: creditsResponse,
+    error,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ["credits"],
+    queryFn: async () => {
+      const response = await api.get("/api/credits/users");
+      return response.data;
+    },
+  });
 
   const signOut = async () => {
     await client.signOut({
@@ -30,13 +45,20 @@ const NavBar = () => {
     });
   };
 
+  if (isPending) {
+    return <div>Loading Data...</div>;
+  }
+
+  if (isError) {
+    return <div> An error occurred: {error.message}</div>;
+  }
   return (
     <div className="relative left-[20%]">
       <div className="bg-[#0A0F13] flex flex-row justify-end border-2 border-[#202327] p-4 gap-x-4 w-[80%]">
         <Link href="/billings">
           <Button className="bg-[#12161D] border-2 border-[#262B30] rounded-lg hover:cursor-pointer">
             <CoinsIcon className="text-[#E1AF3A]" />
-            {/* Will render later for user's account balance*/} 100 credits
+            {creditsResponse?.credits ?? 0}
           </Button>
         </Link>
         {showPanel ? (

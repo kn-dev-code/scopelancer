@@ -123,7 +123,7 @@ const Dashboard = () => {
           {/* User information container */}
           <div className="grid grid-cols-4 gap-x-3 w-[95%] self-center justify-self-end pt-11 relative bottom-20">
             {Object.entries(userInformation).map(([key, card]) => (
-              <Link href={card.link}>
+              <Link key={key} href={card.link}>
                 <Card
                   className="bg-[#12161D] border-2 border-[#202327] rounded-2xl hover:border-2 hover:border-[#2E9EE0] hover:cursor-pointer hover:transition hover:duration-500 hover:ease-in-out"
                   key={key}

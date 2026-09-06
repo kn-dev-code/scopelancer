@@ -3,6 +3,7 @@ import { HTTP_STATUS } from "@/lib/error_codes/error-code";
 import { sessionAuth } from "@/lib/session-auth-check/session-auth";
 import { NextRequest, NextResponse } from "next/server";
 
+//
 export async function GET(request: NextRequest) {
   const session = await sessionAuth();
   if (!session) {
@@ -12,14 +13,14 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const credits = await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: {
       credits: true,
     },
   });
 
-  if (!credits) {
+  if (!user) {
     return NextResponse.json(
       { message: "User not found." },
       { status: HTTP_STATUS.NOT_FOUND },
@@ -27,7 +28,7 @@ export async function GET(request: NextRequest) {
   }
 
   return NextResponse.json(
-    { message: "Credits successfully retrieved", credits: credits },
+    { message: "Credits successfully retrieved", credits: user.credits },
     { status: HTTP_STATUS.OK },
   );
 }

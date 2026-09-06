@@ -1,16 +1,13 @@
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+"use client";
+import { Card } from "@/components/ui/card";
 import NavBar from "../pages/navbar";
 import SideBar from "../pages/sidebar";
 import { CoinsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/axios/api";
 const Billing = () => {
   const t = useTranslations();
   const creditPacks = {
@@ -30,6 +27,27 @@ const Billing = () => {
       price: "$119" as string,
     },
   };
+
+  const {
+    data: creditsResponse,
+    isPending,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["credits"],
+    queryFn: async () => {
+      const response = await api.get("/api/credits/users");
+      return response.data;
+    },
+  });
+
+  if (isPending) {
+    return <div>Loading data...</div>;
+  }
+
+  if (isError) {
+    return <div>Error occurred: {error.message}</div>;
+  }
   return (
     <div className="min-h-screen bg-[#0A0F13] text-white flex overflow-hidden">
       {/* 1. Left Sidebar */}
@@ -63,7 +81,9 @@ const Billing = () => {
                 <p className="text-[#9199A2] text-xs font-medium uppercase tracking-wider">
                   {t("billings.availableBalance")}
                 </p>
-                <p className="text-3xl font-bold mt-1">1,840</p>
+                <p className="text-3xl font-bold mt-1">
+                  {creditsResponse?.credits ?? 0}
+                </p>
               </div>
             </div>
           </Card>
