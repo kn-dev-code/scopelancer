@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,6 +27,7 @@ import { toast } from "@/components/ui/toast";
 import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { api } from "@/lib/axios/api";
 const NewSession = () => {
   const t = useTranslations();
   const [file, setFile] = useState<File | null>(null);
@@ -161,7 +163,7 @@ const NewSession = () => {
           file?.name.endsWith("mp3"),
         { message: "File must end in MP4, MP3, WAV, or M4A" },
       )
-      .refine((file) => file && file.size <= MAX_FILE_SIZE_MB, {
+      .refine((file) => file && file.size <= MAX_FILE_SIZE_MB * 1024 * 1024, {
         message: "File cannot be greater than 5MB",
       }),
     sessionTitle: z.string().min(1, "Please provide a session title"),
@@ -190,6 +192,18 @@ const NewSession = () => {
       client: "",
       context: "",
       deliverables: undefined,
+    },
+  });
+
+  // POST data
+  const queryClient = useQueryClient();
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationFn: async () => {
+      const response = await api.post("/api/sessions/users");
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries();
     },
   });
 
