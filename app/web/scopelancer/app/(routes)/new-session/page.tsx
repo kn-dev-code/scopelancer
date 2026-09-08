@@ -151,7 +151,7 @@ const NewSession = () => {
 
   const sessionSchema = z.object({
     clientFile: z
-      .custom<File>()
+      .custom<File>((file) => file instanceof File, "A file is required.")
       .refine((file) => file instanceof File, {
         message: "Must be a file type.",
       })
@@ -163,19 +163,15 @@ const NewSession = () => {
           file?.name.endsWith("mp3"),
         { message: "File must end in MP4, MP3, WAV, or M4A" },
       )
-      .refine((file) => file && file.size <= MAX_FILE_SIZE_MB * 1024 * 1024, {
-        message: "File cannot be greater than 5MB",
-      }),
+      .refine(
+        (file) => file.size <= MAX_FILE_SIZE_MB * 1024 * 1024,
+        "File size must be under 25MB",
+      ),
     sessionTitle: z.string().min(1, "Please provide a session title"),
     client: z.string().min(1, "Please provide a client name"),
     context: z.string().min(1).optional(),
-    deliverables: z.enum([
-      "transcribe",
-      "scope-document",
-      "flow-diagram",
-      "email",
-    ]),
-    emailType: z.enum(["Professional", "Friendly", "Direct"]),
+    deliverables: z.array(z.string()).min(1, "Select at least one deliverable"),
+    emailType: z.enum(["Professional", "Friendly", "Direct"]).optional(),
   });
 
   type SessionInput = z.infer<typeof sessionSchema>;
@@ -206,6 +202,40 @@ const NewSession = () => {
       queryClient.invalidateQueries();
     },
   });
+
+  const patchSessionData = useMutation({
+    mutationFn: async ({
+      sessionId,
+      patchedData,
+    }: {
+      sessionId: string;
+      patchedData: Partial<z.infer<typeof sessionSchema>>;
+    }) => {
+      const response = await api.patch(
+        `/api/sessions/users/${sessionId}`,
+        patchedData,
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+    },
+  });
+
+  const deleteSessionData = useMutation({
+    mutationFn: async (sessionId: string) => {
+      const response = await api.delete(`/api/sessions/users/${sessionId}`);
+      return response.data;
+    },
+  });
+
+  if (isPending) {
+    return <div>Loading ...</div>;
+  }
+
+  if (isError) {
+    return <div>{error.message}</div>;
+  }
 
   return (
     <div className="bg-[#060D1A] font-sans w-full h-screen overflow-y-auto pt-5">

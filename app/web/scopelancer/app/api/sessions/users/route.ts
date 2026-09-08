@@ -31,3 +31,51 @@ export async function GET(request: NextRequest) {
 }
 
 // POST /api/sessions/users
+export async function POST(request: NextRequest) {
+  try {
+    const session = await sessionAuth();
+    if (!session) {
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: HTTP_STATUS.UNAUTHORIZED },
+      );
+    }
+    const body = await request.json();
+    const {
+      clientFile,
+      client,
+      sessionTitle,
+      context,
+      deliverables,
+      emailType,
+    } = body;
+    const newSession = await prisma.appSession.create({
+      data: {
+        clientFile,
+        client,
+        sessionTitle,
+        context,
+        deliverables,
+        emailType,
+        userId: session.user.id,
+      },
+      select: {
+        clientFile: true,
+        client: true,
+        sessionTitle: true,
+        context: true,
+        deliverables: true,
+        emailType: true,
+      },
+    });
+    return NextResponse.json(
+      { message: "New session created", session: newSession },
+      { status: HTTP_STATUS.OK },
+    );
+  } catch (e) {
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
+    );
+  }
+}
