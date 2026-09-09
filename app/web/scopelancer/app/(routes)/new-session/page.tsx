@@ -190,7 +190,6 @@ const NewSession = () => {
       deliverables: undefined,
     },
   });
-
   // POST data
   const queryClient = useQueryClient();
   const { mutate, isPending, isError, error } = useMutation({
@@ -203,6 +202,7 @@ const NewSession = () => {
     },
   });
 
+  // PATCH data
   const patchSessionData = useMutation({
     mutationFn: async ({
       sessionId,
@@ -222,6 +222,7 @@ const NewSession = () => {
     },
   });
 
+  // DELETE data
   const deleteSessionData = useMutation({
     mutationFn: async (sessionId: string) => {
       const response = await api.delete(`/api/sessions/users/${sessionId}`);

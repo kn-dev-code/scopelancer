@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/betterauth/auth";
 import { HTTP_STATUS } from "@/lib/error_codes/error-code";
 import { sessionAuth } from "@/lib/session-auth-check/session-auth";
-import { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 type RouteParams = {
