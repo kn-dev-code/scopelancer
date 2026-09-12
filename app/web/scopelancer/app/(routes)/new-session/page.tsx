@@ -190,6 +190,16 @@ const NewSession = () => {
       deliverables: undefined,
     },
   });
+
+  // Submitting form data
+  const onSubmit = (formData: SessionInput) => {
+    const postData = useMutation({
+      mutationFn: async () => {
+        const response = await api.get("/api/sessions/users");
+        return response.data;
+      },
+    });
+  };
   // POST data
   const queryClient = useQueryClient();
   const { mutate, isPending, isError, error } = useMutation({
@@ -227,6 +237,9 @@ const NewSession = () => {
     mutationFn: async (sessionId: string) => {
       const response = await api.delete(`/api/sessions/users/${sessionId}`);
       return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries();
     },
   });
 
@@ -266,7 +279,7 @@ const NewSession = () => {
         <br />
         <div className="flex flex-col justify-center self-center gap-y-4">
           {/* Form Input */}
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             {/* Recording Box */}
             <div className="p-7 w-3xl border-2 border-[#202735] bg-[#0D1624] rounded-2xl">
               {/* Headers */}

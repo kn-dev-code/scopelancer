@@ -5,6 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { api } from "@/lib/axios/api";
+import { useQuery } from "@tanstack/react-query";
 import {
   WaypointsIcon,
   WalletIcon,
@@ -12,9 +14,29 @@ import {
   LayoutDashboardIcon,
   SettingsIcon,
 } from "lucide-react";
-import React from "react";
 import Link from "next/link";
 const SideBar = () => {
+  const {
+    data: userCredits,
+    isPending,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["credits"],
+    queryFn: async () => {
+      const response = await api.get("/api/credits/users");
+      return response.data;
+    },
+  });
+
+  if (isPending) {
+    return <div>Loading ...</div>;
+  }
+
+  if (isError) {
+    return <div>{error.message}</div>;
+  }
+
   return (
     <>
       <div className="border-2 border-[#22272C] bg-[#0D1218] flex flex-col justify-between h-screen w-[20%] p-9 relative bottom-[8%]">
@@ -68,7 +90,7 @@ const SideBar = () => {
           <CardHeader>
             <CardTitle className=" text-[#9199A2]">Credit Balance</CardTitle>
             <CardDescription className="text-white text-lg font-bold">
-              {/* Will render later for user's credit balance */} 1,800
+              {userCredits?.credits ?? 0}
             </CardDescription>
             <Button className="text-black bg-[#2EA2E6] hover:cursor-pointer hover:bg-[#2EA2E6]/80">
               Buy Credits
