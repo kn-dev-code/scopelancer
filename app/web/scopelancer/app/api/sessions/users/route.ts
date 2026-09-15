@@ -5,16 +5,6 @@ import { HTTP_STATUS } from "@/lib/error_codes/error-code";
 import { sessionAuth } from "@/lib/session-auth-check/session-auth";
 import { z } from "zod";
 
-export const sessionApiSchema = z.object({
-  clientFileKey: z.string(),
-  sessionTitle: z.string(),
-  client: z.string().min(1),
-  context: z.string().optional(),
-  deliverables: z.array(z.string().min(1)),
-  emailType: z.enum(["Professional", "Friendly", "Direct"]).optional(),
-});
-type SessionInput = typeof sessionApiSchema;
-
 // GET /api/sessions/users
 export async function GET(request: NextRequest) {
   const session = await sessionAuth();
