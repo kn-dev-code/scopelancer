@@ -3,6 +3,9 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { z } from "zod";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "@/lib/aws/s3";
+import { prisma } from "@/lib/betterauth/auth";
+import { bodyParser } from "better-auth/react";
+import { NextRequest } from "next/server";
 
 const ACCEPTED_AUDIO_TYPES = [
   "audio/mp4",
@@ -17,7 +20,9 @@ export const presignedUrlSchema = z.object({
   fileName: z.string().min(1, "File name required"),
   fileType: z
     .string()
-    .endsWith(ACCEPTED_AUDIO_TYPES[0], "Only audio files are allowed"),
+    .refine((fileType) => ACCEPTED_AUDIO_TYPES.includes(fileType), {
+      message: "Only audio files are allowed",
+    }),
   fileSize: z.number().max(MAX_FILE_SIZE_MB, "File size must be under 25 MB"),
 });
 
@@ -45,7 +50,7 @@ export async function getPresignedUrl(input: presignedUrlInput) {
   try {
     // Creating a new bucket
     const command = new PutObjectCommand({
-      Bucket: process.env.AWS_BUCKET_NAME as string,
+      Bucket: process.env.AWS_S3_BUCKET_NAME as string,
       Key: key,
       ContentType: fileType,
     });
@@ -63,7 +68,6 @@ export async function sessionInput(input: sessionApiInput) {
     return { success: false, error: validation.error.flatten().fieldErrors };
   }
   const data = validation.data;
-  // Send data over to Prisma
 
   // Send data over to FastAPI (AI) w/ Axios
 

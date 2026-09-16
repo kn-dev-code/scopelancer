@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     }
     const body = await request.json();
     const {
-      clientFile,
+      clientFileKey,
       client,
       sessionTitle,
       context,
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     } = body;
     const newSession = await prisma.appSession.create({
       data: {
-        clientFile,
+        clientFile: clientFileKey,
         client,
         sessionTitle,
         context,
