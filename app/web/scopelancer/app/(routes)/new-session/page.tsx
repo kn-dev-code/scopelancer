@@ -28,6 +28,7 @@ import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/lib/axios/api";
+import { getPresignedUrl } from "@/app/external_server/aws-actions";
 const NewSession = () => {
   const t = useTranslations();
   const [file, setFile] = useState<File | null>(null);
@@ -192,12 +193,27 @@ const NewSession = () => {
   });
 
   // Submitting form data
-  const onSubmit = (formData: SessionInput) => {
+  const onSubmit = async (formData: SessionInput) => {
     const postData = useMutation({
       mutationFn: async () => {
         const response = await api.get("/api/sessions/users");
         return response.data;
       },
+    });
+
+    const presignedRes = await getPresignedUrl({
+      fileName: formData.clientFile.name,
+      fileType: formData.clientFile.type,
+      fileSize: formData.clientFile.size,
+    });
+
+    if (!presignedRes.success || !presignedRes.uploadUrl || !presignedRes.key) {
+      toast.add({ title: "Failed to authorize upload", type: "error" });
+      return;
+    }
+    await api.put(presignedRes.uploadUrl, formData.clientFile, {
+      baseURL: "",
+      headers: { "Content-Type": formData.clientFile.type },
     });
   };
   // POST data

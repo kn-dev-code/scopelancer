@@ -3,7 +3,10 @@ import { auth, prisma } from "@/lib/betterauth/auth";
 import { headers } from "next/headers";
 import { HTTP_STATUS } from "@/lib/error_codes/error-code";
 import { sessionAuth } from "@/lib/session-auth-check/session-auth";
-import { z } from "zod";
+import {
+  sessionApiInput,
+  sessionApiSchema,
+} from "@/app/external_server/aws-actions";
 
 // GET /api/sessions/users
 export async function GET(request: NextRequest) {
@@ -36,44 +39,30 @@ export async function POST(request: NextRequest) {
   try {
     const session = await sessionAuth();
     if (!session) {
-      return NextResponse.json(
-        { message: "Unauthorized" },
-        { status: HTTP_STATUS.UNAUTHORIZED },
-      );
+      return NextResponse.json({
+        message: "Unauthorized",
+        status: HTTP_STATUS.UNAUTHORIZED,
+      });
     }
     const body = await request.json();
-    const {
-      clientFileKey,
-      client,
-      sessionTitle,
-      context,
-      deliverables,
-      emailType,
-    } = body;
+    const validation = sessionApiSchema.parse(body);
     const newSession = await prisma.appSession.create({
       data: {
-        clientFile: clientFileKey,
-        client,
-        sessionTitle,
-        context,
-        deliverables,
-        emailType,
         userId: session.user.id,
-      },
-      select: {
-        clientFile: true,
-        client: true,
-        sessionTitle: true,
-        context: true,
-        deliverables: true,
-        emailType: true,
+        clientFile: validation.clientFileKey,
+        client: validation.client,
+        sessionTitle: validation.sessionTitle,
+        context: validation.context,
+        deliverables: validation.deliverables,
+        emailType: validation.emailType,
       },
     });
     return NextResponse.json(
-      { message: "New session created", session: newSession },
+      { message: "Session created successfully", session: newSession },
       { status: HTTP_STATUS.OK },
     );
   } catch (e) {
+    console.error("Error creating session:", e);
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },

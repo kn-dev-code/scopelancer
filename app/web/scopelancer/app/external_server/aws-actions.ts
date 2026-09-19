@@ -6,6 +6,9 @@ import { s3Client } from "@/lib/aws/s3";
 import { prisma } from "@/lib/betterauth/auth";
 import { bodyParser } from "better-auth/react";
 import { NextRequest } from "next/server";
+import { api } from "@/lib/axios/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Deliverables, EmailType } from "@/lib/generated/client";
 
 const ACCEPTED_AUDIO_TYPES = [
   "audio/mp4",
@@ -31,8 +34,8 @@ export const sessionApiSchema = z.object({
   sessionTitle: z.string(),
   client: z.string().min(1),
   context: z.string().optional(),
-  deliverables: z.array(z.string().min(1)),
-  emailType: z.enum(["Professional", "Friendly", "Direct"]).optional(),
+  deliverables: z.array(z.nativeEnum(Deliverables)).optional(),
+  emailType: z.nativeEnum(EmailType).optional(),
 });
 
 export type presignedUrlInput = z.infer<typeof presignedUrlSchema>; // Presigned type input
