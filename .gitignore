@@ -24,3 +24,7 @@ override.tf.json
 # CLI configurations
 .terraformrc
 terraform.rc
+
+# ENV 
+.env
+.env.local
