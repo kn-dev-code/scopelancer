@@ -19,11 +19,13 @@ class EmailType(str, Enum):
 
 # Model class for Files
 class FileModel(SQLModel, table=True):
+    __tablename__ = "AppSession"
     id: str = Field(default=None, primary_key=True)
     clientFile: str
     client: str
-    session_title: str
+    sessionTitle: str
     context: Optional[str]
-    deliverables: Deliverables = None,
-    email_type: EmailType = None
+    deliverables: Optional[Deliverables] = Field(default=None),
+    emailType: Optional[EmailType] = Field(default=None),
+    userId: str = Field(foreign_key = "User.id")
    
