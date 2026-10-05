@@ -1,9 +1,11 @@
 from typing import TypedDict, Optional, List
 
 
+
 class State(TypedDict):
-    audio_id: str
+    session_id: str
     clientFile: str
+    client: str
     sessionTitle: str
     context: str
     selected_deliverables: List[str]
