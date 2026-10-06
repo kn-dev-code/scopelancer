@@ -24,3 +24,4 @@ def router_edges(state: State) -> str:
 builder.add_edge(START, "transcribe")
 
 # setup routes
+# route functions
