@@ -22,6 +22,9 @@ def router_edges(state: State) -> str:
     return END
 
 builder.add_edge(START, "transcribe")
-
+builder.add_edge(router_edges, "scope_document")
+builder.add_edge(router_edges, "flow_diagram")
+builder.add_edge(router_edges, "email")
 # setup routes
 # route functions
+# edges
