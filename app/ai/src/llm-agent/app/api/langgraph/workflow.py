@@ -2,6 +2,7 @@ from app.api.langgraph.state import GraphState
 from langgraph.graph import StateGraph, START, END
 from app.api.langgraph import State
 from app.api.langgraph.node import (transcribe_node, scope_doc_node, flow_diagram_node, email_node)
+from langgraph.checkpoint.memory import MemorySaver
 builder = StateGraph(GraphState)
 
 builder.add_node("transcribe", transcribe_node)
@@ -22,10 +23,19 @@ def router_edges(state: State) -> str:
     return END
 
 builder.add_edge(START, "transcribe")
-builder.add_edge(router_edges, "scope_document")
-builder.add_edge(router_edges, "flow_diagram")
-builder.add_edge(router_edges, "email")
-# setup routes
-# route functions
-# edges
-#lkjl
+
+path_map = {
+    "scope_document": "scope_document",
+    "flow_diagram": "flow_diagram",
+    "email": "email",
+    END: END
+}
+
+builder.add_conditional_edges("transcribe", router_edges, path_map)
+builder.add_conditional_edges("scope_document", router_edges, path_map)
+builder.add_conditional_edges("flow_diagram", router_edges, path_map)
+builder.add_conditional_edges("email", router_edges, path_map)
+
+
+memory = MemorySaver()
+langgraph_app = builder.compile(checkpointer=memory)
