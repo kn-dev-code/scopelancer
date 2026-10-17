@@ -1,14 +1,14 @@
 from app.api.langgraph.state import GraphState
 from langgraph.graph import StateGraph, START, END
 from app.api.langgraph import State
-from app.api.langgraph.node import (transcribe_node, scope_doc_node, flow_diagram_node, email_node)
+from app.api.langgraph.node import (transcribe, email, flow, scope)
 from langgraph.checkpoint.memory import MemorySaver
 builder = StateGraph(GraphState)
 
-builder.add_node("transcribe", transcribe_node)
-builder.add_node("scope-document", scope_doc_node)
-builder.add_node("flow-diagram", flow_diagram_node)
-builder.add_node("email", email_node)
+builder.add_node("transcribe", transcribe)
+builder.add_node("scope-document", scope)
+builder.add_node("flow-diagram", flow)
+builder.add_node("email", email)
 
 # Conditions for edging
 def router_edges(state: State) -> str:
