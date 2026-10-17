@@ -18,4 +18,3 @@ class State(TypedDict):
     email_type: Optional[str]
 
 
-
