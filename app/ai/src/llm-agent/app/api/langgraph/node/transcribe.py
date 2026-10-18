@@ -1,4 +1,4 @@
-from api.langgraph.state import State
+from state import State
 import whisper
 
 local_whisper_model = whisper.load_model("small")
@@ -9,9 +9,9 @@ def transcribe_file(state: State) -> dict:
         raise ValueError("Cannot have an empty audio_path")
     
     results = local_whisper_model.transcribe(audio_path)
-    transcribed_text = results["text"]
+    transcribe = results["text"]
 
     return {
-        "transcript": transcribed_text,
-        "messages": [("user", transcribed_text)]
+        "transcript": transcribe,
+        "messages": [("user", transcribe)]
     }
