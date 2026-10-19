@@ -1,15 +1,25 @@
 from state import State
-import whisper
+from openai import OpenAI
+from dotenv import load_dotenv
 
-local_whisper_model = whisper.load_model("small")
+
+load_dotenv()
+
+whisper_model_key = OpenAI()
+
+if not whisper_model_key:
+    raise ValueError("No key found.")
+
 
 def transcribe_file(state: State) -> dict:
-    audio_path = state["clientFile"]
-    if not audio_path or audio_path.isspace():
+    audio_file = state.get("clientFile")
+    if not audio_file or audio_file.isspace():
         raise ValueError("Cannot have an empty audio_path")
     
-    results = local_whisper_model.transcribe(audio_path)
-    transcribe = results["text"]
+    transcribe = whisper_model_key.audio.transcriptions.create(
+        model = "gpt-transcribe",
+        file = audio_file
+    )
 
     return {
         "transcript": transcribe,
