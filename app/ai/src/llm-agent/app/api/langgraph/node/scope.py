@@ -21,4 +21,6 @@ async def scope_document(state: State) -> dict:
         SystemMessage(context=scope_system_message),
         HumanMessage(context=user_message)
     ])
+
+    return response
     

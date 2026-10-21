@@ -41,6 +41,7 @@ async def file_service_controller(session_id: str, request: Request, current_use
         final_state = await langgraph_app.ainvoke(file_state, config=config)
         return final_state
 
+        selected_deliverables = db
         # Await LangGraph API to send file over to
         # More changes
     except HTTPException:
@@ -50,4 +51,23 @@ async def file_service_controller(session_id: str, request: Request, current_use
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
             details = f"Internal Server Error: {str(e)}"
         )
-    
+# email revision for user
+async def email_revision(session_id: str, request: Request, current_user: User = Depends(current_user), db: Session = Depends(get_db), user_revised_email: str):
+    try:
+        
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+            details = f"Internal Server Error: {str(e)}"
+        )
+
+# scope revision for user
+async def scope_revision(session_id: str, request: Request, current_user: User = Depends(current_user), db: Session = Depends(get_db), user_revised_scope: str)
+
+
+# flow revision for user
+async def flow_revision(session_id: str, request: Request, current_user: User = Depends(current_user), db: Session = Depends(get_db), user_revised_scope: str):
+

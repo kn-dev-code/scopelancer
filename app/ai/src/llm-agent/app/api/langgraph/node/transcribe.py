@@ -23,5 +23,5 @@ def transcribe_file(state: State) -> dict:
 
     return {
         "transcript": transcribe,
-        "messages": [("user", transcribe)]
+        "messages": [("User's transcribed text: \n", transcribe)]
     }
