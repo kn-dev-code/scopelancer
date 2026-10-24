@@ -2,7 +2,6 @@ from datetime import date
 from sqlmodel import SQLModel, Field, Optional
 from enum import Enum
 from sqlalchemy import Column, String, Text
-from sqlalchemy.orm import declarative_base
 
 
 # Enum for deliverables
@@ -32,14 +31,14 @@ class FileModel(SQLModel, table=True):
     userId: str = Field(foreign_key = "User.id")
 
 # Model class for ProcessingDeliverables
-Base = declarative_base()
-class ProcessingDeliverables(Base):
+
+class ProcessingDeliverables(SQLModel, table = True):
     __tablename__ = "processing_session"
-    id = Column(String, primary_key=True),
-    user_id = Column(String, nullable=False),
-    file_path = Column(String, nullable = False),
-    transcription = Column(Text, nullable=True),
-    scope_document = Column(Text, nullable=True),
-    flow_diagram = Column(Text, nullable=True),
-    email = Column(Text, nullable=True)
+    thread_id = Field(default=None, primary_key=True),
+    user_id: str = Field(foreign_key="User.id"),
+    file_path: str = Field(nullable=False)
+    transcription: Optional[str] = Field(default=None, sa_column_kwargs={"type_": "TEXT"})
+    scope_document: Optional[str] = Field(default=None, sa_column_kwargs={"type_": "TEXT"})
+    flow_diagram: Optional[str] = Field(default=None, sa_column_kwargs={"type_": "TEXT"})
+    email: Optional[str] = Field(default=None, sa_column_kwargs={"type_": "TEXT"})
    

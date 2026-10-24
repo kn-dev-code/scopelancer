@@ -5,6 +5,7 @@ from app.core.database import get_db
 from app.models.file_model import FileModel, ProcessingDeliverables
 from app.models.user_model import User
 from app.api.langgraph import langgraph_app
+from langgraph.types import Command
 
 async def file_service_controller(session_id: str, request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> ProcessingDeliverables:
     try:
@@ -39,10 +40,21 @@ async def file_service_controller(session_id: str, request: Request, current_use
             }
         }
         final_state = await langgraph_app.ainvoke(file_state, config=config)
-        return final_state
+        deliverable_record = ProcessingDeliverables(
+            thread_id = file.id,
+            user_id = current_user.id,
+            file_path = file.clientFile,
+            transcription = final_state.get("transcribe"),
+            scope_document = final_state.get("scope_document"),
+            flow_diagram = final_state.get("flow_diagram"),
+            email = final_state.get("email")
+        )
+
+        db.add(deliverable_record)
+        await db.commit()
+        await db.refresh(deliverable_record)
+        return deliverable_record
         # Work on pushing the final_state to the selected processing session
-        
-        deliverables = db.add(final_state)
     except HTTPException:
         raise
     except Exception as e:
@@ -51,10 +63,18 @@ async def file_service_controller(session_id: str, request: Request, current_use
             details = f"Internal Server Error: {str(e)}"
         )
 # email revision for user
-async def email_revision(session_id: str, request: Request, current_user: User = Depends(current_user), db: Session = Depends(get_db), user_revised_email: str):
+async def email_revision(session_id: str, request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     try:
-        
+        statement = select(ProcessingDeliverables).where(ProcessingDeliverables.thread_id == session_id, ProcessingDeliverables.user_id == get_current_user.id)
+        user_email = db.exec(statement).first()
 
+        if user_email.email is None:
+            raise HTTPException(
+                status_code = status.HTTP_404_NOT_FOUND,
+                details = f"Email not found"
+            )
+
+        
     except HTTPException:
         raise
     except Exception as e:
@@ -64,9 +84,15 @@ async def email_revision(session_id: str, request: Request, current_user: User =
         )
 
 # scope revision for user
-async def scope_revision(session_id: str, request: Request, current_user: User = Depends(current_user), db: Session = Depends(get_db), user_revised_scope: str)
+async def scope_revision(session_id: str, request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     try:
-    
+        statement = select(ProcessingDeliverables).where(ProcessingDeliverables.thread_id == session_id, ProcessingDeliverables.user_id == get_current_user.id)
+        user_scope = db.exec(statement).first()
+        if user_scope.scope_document is None:
+            raise HTTPException(
+                status_code = status.HTTP_404_NOT_FOUND,
+                details = f"Scope document not found"
+            )
     except HTTPException:
         raise
     except Exception as e:
@@ -76,9 +102,15 @@ async def scope_revision(session_id: str, request: Request, current_user: User =
         )
 
 # flow revision for user
-async def flow_revision(session_id: str, request: Request, current_user: User = Depends(current_user), db: Session = Depends(get_db), user_revised_scope: str):
+async def flow_revision(session_id: str, request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
      try:
-    
+        statement = select(ProcessingDeliverables).where(ProcessingDeliverables.thread_id == session_id, ProcessingDeliverables.user_id == get_current_user.id)
+        user_scope = db.exec(statement).first()
+        if user_scope.flow_diagram is None:
+            raise HTTPException(
+                status_code = status.HTTP_404_NOT_FOUND,
+                details = f"Scope document not found"
+            )
      except HTTPException:
         raise
      except Exception as e:
