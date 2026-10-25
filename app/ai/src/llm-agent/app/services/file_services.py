@@ -65,15 +65,36 @@ async def file_service_controller(session_id: str, request: Request, current_use
 # email revision for user
 async def email_revision(session_id: str, request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     try:
-        statement = select(ProcessingDeliverables).where(ProcessingDeliverables.thread_id == session_id, ProcessingDeliverables.user_id == get_current_user.id)
-        user_email = db.exec(statement).first()
+        statement = select(ProcessingDeliverables).where(ProcessingDeliverables.thread_id == session_id, ProcessingDeliverables.user_id == current_user.id)
+        db_item = db.exec(statement).first()
 
-        if user_email.email is None:
+        if not db_item:
             raise HTTPException(
-                status_code = status.HTTP_404_NOT_FOUND,
-                details = f"Email not found"
+                status_code= status.HTTP_400_BAD_REQUEST,
+                details= f"Edited email content required."
             )
 
+        config = {
+            "configurable": {
+                "thread_id": session_id
+            }
+        }
+        
+        body = await request.json()
+        user_edited_email = body.get("edited_email")
+
+        final_state = await langgraph_app.ainvoke(
+            Command(resume=user_edited_email, config=config)
+        )
+
+        updated_email = final_state.get("email", user_edited_email)
+
+        db_item.email = updated_email
+        db_item.add(db_item)
+        db_item.commit()
+        db_item.refresh(db_item)
+
+        return {"status": "SUCCESS", "data": db_item}
         
     except HTTPException:
         raise
