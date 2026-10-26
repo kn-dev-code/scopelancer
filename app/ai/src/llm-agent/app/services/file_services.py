@@ -63,7 +63,7 @@ async def file_service_controller(session_id: str, request: Request, current_use
             details = f"Internal Server Error: {str(e)}"
         )
 # email revision for user
-async def email_revision(session_id: str, request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def email_revision_controller(session_id: str, request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     try:
         statement = select(ProcessingDeliverables).where(ProcessingDeliverables.thread_id == session_id, ProcessingDeliverables.user_id == current_user.id)
         db_item = db.exec(statement).first()
@@ -105,7 +105,7 @@ async def email_revision(session_id: str, request: Request, current_user: User =
         )
 
 # scope revision for user
-async def scope_revision(session_id: str, request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def scope_revision_controller(session_id: str, request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     try:
         statement = select(ProcessingDeliverables).where(ProcessingDeliverables.thread_id == session_id, ProcessingDeliverables.user_id == get_current_user.id)
         user_scope = db.exec(statement).first()
@@ -123,7 +123,7 @@ async def scope_revision(session_id: str, request: Request, current_user: User =
         )
 
 # flow revision for user
-async def flow_revision(session_id: str, request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def flow_revision_controller(session_id: str, request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
      try:
         statement = select(ProcessingDeliverables).where(ProcessingDeliverables.thread_id == session_id, ProcessingDeliverables.user_id == get_current_user.id)
         user_scope = db.exec(statement).first()
