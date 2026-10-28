@@ -8,7 +8,7 @@ from app.util.auth_jwt import get_current_user
 from app.models.user_model import User
 from app.models.file_model import FileModel
 
-router = APIRouter(
+file_router = APIRouter(
     prefix="/file",
     tags=["Files"]
 )
