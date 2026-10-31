@@ -29,6 +29,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/lib/axios/api";
 import { getPresignedUrl } from "@/app/external_server/aws-actions";
+
 const NewSession = () => {
   const t = useTranslations();
   const [file, setFile] = useState<File | null>(null);
@@ -97,11 +98,14 @@ const NewSession = () => {
   const estimatedCost = calculateTotalCredits(audioDuration, tools);
 
   const toggleToolInput = (toolId: string) => {
-    setTools((prev) =>
-      prev.includes(toolId)
+    setTools((prev) => {
+      const nextTools = prev.includes(toolId)
         ? prev.filter((id) => id !== toolId)
-        : [...prev, toolId],
-    );
+        : [...prev, toolId];
+
+      setValue("deliverables", nextTools, { shouldValidate: true });
+      return nextTools;
+    });
   };
 
   const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,7 +156,7 @@ const NewSession = () => {
 
   const sessionSchema = z.object({
     clientFile: z
-      .custom<File>((file) => file instanceof File, "A file is required.")
+      .custom<File>((file) => file instanceof File)
       .refine((file) => file instanceof File, {
         message: "Must be a file type.",
       })
@@ -181,6 +185,7 @@ const NewSession = () => {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
   } = useForm<SessionInput>({
     resolver: zodResolver(sessionSchema),
     defaultValues: {
@@ -188,7 +193,7 @@ const NewSession = () => {
       sessionTitle: "",
       client: "",
       context: "",
-      deliverables: undefined,
+      deliverables: ["transcribe"],
     },
   });
 
@@ -216,6 +221,7 @@ const NewSession = () => {
       headers: { "Content-Type": formData.clientFile.type },
     });
   };
+
   // POST data
   const queryClient = useQueryClient();
   const { mutate, isPending, isError, error } = useMutation({
@@ -312,12 +318,11 @@ const NewSession = () => {
                   <FieldGroup>
                     <Input
                       onChange={handleFileInput}
-                      //{...register("clientFile")}
                       className="text-[#0D1624] bg-[#0D1624] placeholder:text-[#0D1624] p-20 hover:cursor-pointer hover:bg-[#0D1624]/80"
                       type="file"
                     />
                     {errors.clientFile && (
-                      <p style={{ color: "red" }}>
+                      <p className="text-sm relative top-7" style={{ color: "red" }}>
                         {errors.clientFile.message}
                       </p>
                     )}
@@ -350,7 +355,7 @@ const NewSession = () => {
                         {...register("sessionTitle")}
                       />
                       {errors.sessionTitle && (
-                        <p style={{ color: "red" }}>
+                        <p className="text-sm" style={{ color: "red" }}>
                           {errors.sessionTitle.message}
                         </p>
                       )}
@@ -387,7 +392,7 @@ const NewSession = () => {
                       )}
                     />
                     {errors.context && (
-                      <p style={{ color: "red" }}>{errors.context.message}</p>
+                      <p className="text-sm text-red-500">{errors.context.message}</p>
                     )}
                   </Field>
                 </FieldGroup>
@@ -407,17 +412,15 @@ const NewSession = () => {
                   <div className="flex flex-row justify-center gap-x-4">
                     <Button
                       onClick={() => {
-                        toggleToolInput("transcript");
+                        toggleToolInput("transcribe");
                       }}
                       type="button"
-                      {...register("deliverables")}
-                      className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${tools.includes("transcript") ? "bg-[#0E2539 border-[#00B2F9]" : "border-[#202735] bg-[#0D1624]"}`}
+                      className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${
+                        tools.includes("transcribe")
+                          ? "bg-[#0E2539] border-[#00B2F9]"
+                          : "border-[#202735] bg-[#0D1624]"
+                      }`}
                     >
-                      {errors.deliverables && (
-                        <p style={{ color: "red" }}>
-                          {errors.deliverables.message}
-                        </p>
-                      )}
                       <Field>
                         <FieldLabel className="text-white font-bold">
                           {t("newSession.deliverables.transcript.title")}
@@ -432,11 +435,14 @@ const NewSession = () => {
                         toggleToolInput("scope-document");
                       }}
                       type="button"
-                      {...register("deliverables")}
-                      className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${tools.includes("scope-document") ? "bg-[#0E2539 border-[#00B2F9]" : "border-[#202735] bg-[#0D1624]"}`}
+                      className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${
+                        tools.includes("scope-document")
+                          ? "bg-[#0E2539] border-[#00B2F9]"
+                          : "border-[#202735] bg-[#0D1624]"
+                      }`}
                     >
                       {errors.deliverables && (
-                        <p style={{ color: "red" }}>
+                        <p className="text-sm text-red-500">
                           {errors.deliverables.message}
                         </p>
                       )}
@@ -459,14 +465,12 @@ const NewSession = () => {
                         toggleToolInput("flow-diagram");
                       }}
                       type="button"
-                      {...register("deliverables")}
-                      className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${tools.includes("flow-diagram") ? "bg-[#0E2539 border-[#00B2F9]" : "border-[#202735] bg-[#0D1624]"}`}
+                      className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${
+                        tools.includes("flow-diagram")
+                          ? "bg-[#0E2539] border-[#00B2F9]"
+                          : "border-[#202735] bg-[#0D1624]"
+                      }`}
                     >
-                      {errors.deliverables && (
-                        <p style={{ color: "red" }}>
-                          {errors.deliverables.message}
-                        </p>
-                      )}
                       <Field>
                         <FieldLabel className="text-white font-bold">
                           {t("newSession.deliverables.flowDiagram.title")}
@@ -481,11 +485,14 @@ const NewSession = () => {
                         toggleToolInput("email");
                       }}
                       type="button"
-                      {...register("deliverables")}
-                      className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${tools.includes("email") ? "bg-[#0E2539 border-[#00B2F9]" : "border-[#202735] bg-[#0D1624]"}`}
+                      className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${
+                        tools.includes("email")
+                          ? "bg-[#0E2539] border-[#00B2F9]"
+                          : "border-[#202735] bg-[#0D1624]"
+                      }`}
                     >
                       {errors.deliverables && (
-                        <p style={{ color: "red" }}>
+                        <p className="text-sm text-red-500">
                           {errors.deliverables.message}
                         </p>
                       )}
@@ -526,7 +533,7 @@ const NewSession = () => {
                     </SelectContent>
                   </Select>
                   {errors.emailType && (
-                    <p style={{ color: "red" }}>{errors.emailType.message}</p>
+                    <p className="text-sm text-red-500">{errors.emailType.message}</p>
                   )}
                 </FieldGroup>
               </FieldSet>
