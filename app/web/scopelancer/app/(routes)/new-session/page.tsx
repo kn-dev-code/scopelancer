@@ -322,7 +322,10 @@ const NewSession = () => {
                       type="file"
                     />
                     {errors.clientFile && (
-                      <p className="text-sm relative top-7" style={{ color: "red" }}>
+                      <p
+                        className="text-sm relative top-7"
+                        style={{ color: "red" }}
+                      >
                         {errors.clientFile.message}
                       </p>
                     )}
@@ -392,7 +395,9 @@ const NewSession = () => {
                       )}
                     />
                     {errors.context && (
-                      <p className="text-sm text-red-500">{errors.context.message}</p>
+                      <p className="text-sm text-red-500">
+                        {errors.context.message}
+                      </p>
                     )}
                   </Field>
                 </FieldGroup>
@@ -533,7 +538,9 @@ const NewSession = () => {
                     </SelectContent>
                   </Select>
                   {errors.emailType && (
-                    <p className="text-sm text-red-500">{errors.emailType.message}</p>
+                    <p className="text-sm text-red-500">
+                      {errors.emailType.message}
+                    </p>
                   )}
                 </FieldGroup>
               </FieldSet>
