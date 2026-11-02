@@ -108,6 +108,7 @@ const NewSession = () => {
     });
   };
 
+  // Checking file input error
   const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (!selectedFile) return;
