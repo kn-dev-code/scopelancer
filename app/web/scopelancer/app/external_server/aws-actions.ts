@@ -70,13 +70,14 @@ export async function sessionInput(input: sessionApiInput) {
   if (!validation.success) {
     return { success: false, error: validation.error.flatten().fieldErrors };
   }
-  const data = validation.data;
+  const sessionData = validation.data;
 
   // Send data over to FastAPI (AI) w/ Axios
+  const response = api.post("/file/file-conversion", sessionData);
 
   return {
     success: true,
     message: "Session saved successfully",
-    sessionKey: data.clientFileKey,
+    sessionKey: sessionData.clientFileKey,
   };
 }

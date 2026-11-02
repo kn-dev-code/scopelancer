@@ -12,7 +12,7 @@ file_router = APIRouter(
     prefix="/file",
     tags=["Files"]
 )
-@router.post("/file-conversion")
+@file_router.post("/file-conversion")
 async def file_service(session_id: str, request: Request, db = Depends(get_db), current_user: User = Depends(get_current_user)):
     statement = select(FileModel).where(FileModel.userId == current_user.id)
     if not statement: 
@@ -21,6 +21,11 @@ async def file_service(session_id: str, request: Request, db = Depends(get_db), 
             detail = "No user found"
         )
     file_record = db.exec(statement).first()
+    if not file_record:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail= "File not found."
+        )
     file_llm_model = await file_service_controller(
         session_id=session_id,
         request=request,
@@ -29,7 +34,7 @@ async def file_service(session_id: str, request: Request, db = Depends(get_db), 
     )
     return file_llm_model
 
-@router.patch("/sessions/{session_id}/email-revision")
+@file_router.patch("/sessions/{session_id}/email-revision")
 async def handle_email_revision(session_id: str, request: Request, db = Depends(get_db), current_user: User = Depends(get_current_user)):
     statement = select(FileModel).where(FileModel.userId == current_user.id, FileModel.id == session_id)
     if not statement: 
@@ -46,7 +51,7 @@ async def handle_email_revision(session_id: str, request: Request, db = Depends(
     )
     return email_revision
 
-@router.patch("/sessions/{session_id}/flow-revision")
+@file_router.patch("/sessions/{session_id}/flow-revision")
 async def handle_flow_revision(session_id: str, request: Request, db = Depends(get_db), current_user: User = Depends(get_current_user)):
     user_id = current_user.get("id") or current_user.get("user_id") or current_user.get("sub")
     if not user_id: 
@@ -62,7 +67,7 @@ async def handle_flow_revision(session_id: str, request: Request, db = Depends(g
     )
     return flow_revision
 
-@router.patch("/sessions/{session_id}/scope-revision")
+@file_router.patch("/sessions/{session_id}/scope-revision")
 async def handle_scope_revision(session_id: str, request: Request, db = Depends(get_db), current_user: User = Depends(get_current_user)):
     user_id = current_user.get("id") or current_user.get("user_id") or current_user.get("sub")
     if not user_id: 

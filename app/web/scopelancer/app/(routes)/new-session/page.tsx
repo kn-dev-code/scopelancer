@@ -152,6 +152,7 @@ const NewSession = () => {
         URL.revokeObjectURL(objectURL);
       };
       setFile(selectedFile);
+      setValue("clientFile", selectedFile, {shouldValidate: true})
     }
   };
 
@@ -200,7 +201,7 @@ const NewSession = () => {
 
   // Submitting form data
   const onSubmit = async (formData: SessionInput) => {
-    const postData = useMutation({
+      const postData = useMutation({
       mutationFn: async () => {
         const response = await api.get("/api/sessions/users");
         return response.data;
@@ -223,19 +224,8 @@ const NewSession = () => {
     });
   };
 
-  // POST data
-  const queryClient = useQueryClient();
-  const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: async () => {
-      const response = await api.post("/api/sessions/users");
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries();
-    },
-  });
-
   // PATCH data
+  const queryClient = useQueryClient();
   const patchSessionData = useMutation({
     mutationFn: async ({
       sessionId,
@@ -254,7 +244,7 @@ const NewSession = () => {
       queryClient.invalidateQueries();
     },
   });
-
+  
   // DELETE data
   const deleteSessionData = useMutation({
     mutationFn: async (sessionId: string) => {
@@ -265,14 +255,6 @@ const NewSession = () => {
       queryClient.invalidateQueries();
     },
   });
-
-  if (isPending) {
-    return <div>Loading ...</div>;
-  }
-
-  if (isError) {
-    return <div>{error.message}</div>;
-  }
 
   return (
     <div className="bg-[#060D1A] font-sans w-full h-screen overflow-y-auto pt-5">
@@ -315,7 +297,7 @@ const NewSession = () => {
               <span className="text-[#0D1624]">-</span>
               {/* 1. File Input */}
               <div className="border border-dashed rounded-2xl hover:border-[#00B2F9] transition-all duration-300 ease-in-out flex flex-col justify-center">
-                <FieldSet>
+                  <FieldSet>
                   <FieldGroup>
                     <Input
                       onChange={handleFileInput}
@@ -327,7 +309,7 @@ const NewSession = () => {
                         className="text-sm relative top-7"
                         style={{ color: "red" }}
                       >
-                        {errors.clientFile.message}
+                        {errors.clientFile?.message}
                       </p>
                     )}
                   </FieldGroup>
@@ -560,12 +542,10 @@ const NewSession = () => {
                   </Button>
                 </Link>
                 <Button
-                  onClick={() =>
-                    toast.add({
-                      title: "Submission successfull!",
-                      type: "success",
-                    })
-                  }
+                  onClick={() => {toast.add({
+                    title: "From submitted successfully!",
+                    type: "success"
+                  })}}
                   className="bg-[#00B2F9] text-black p-5 w-[85%] hover:scale-105 hover:bg-[#00B2F9]/80 hover:transition-all hover:duration-300 hover:cursor-pointer"
                   type="submit"
                 >
