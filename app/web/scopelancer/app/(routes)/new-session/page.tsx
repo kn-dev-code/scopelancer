@@ -152,7 +152,7 @@ const NewSession = () => {
         URL.revokeObjectURL(objectURL);
       };
       setFile(selectedFile);
-      setValue("clientFile", selectedFile, {shouldValidate: true})
+      setValue("clientFile", selectedFile, { shouldValidate: true });
     }
   };
 
@@ -199,29 +199,49 @@ const NewSession = () => {
     },
   });
 
-  // Submitting form data
-  const onSubmit = async (formData: SessionInput) => {
-      const postData = useMutation({
-      mutationFn: async () => {
-        const response = await api.get("/api/sessions/users");
-        return response.data;
-      },
-    });
+  const createSessionMutation = useMutation({
+    mutationFn: async (formData: SessionInput) => {
+      const presignedRes = await getPresignedUrl({
+        fileName: formData.clientFile.name,
+        fileType: formData.clientFile.type,
+        fileSize: formData.clientFile.size,
+      });
 
-    const presignedRes = await getPresignedUrl({
-      fileName: formData.clientFile.name,
-      fileType: formData.clientFile.type,
-      fileSize: formData.clientFile.size,
-    });
+      if (
+        !presignedRes.success ||
+        !presignedRes.uploadUrl ||
+        !presignedRes.key
+      ) {
+        throw new Error("Failed to authorize upload");
+      }
 
-    if (!presignedRes.success || !presignedRes.uploadUrl || !presignedRes.key) {
-      toast.add({ title: "Failed to authorize upload", type: "error" });
-      return;
-    }
-    await api.put(presignedRes.uploadUrl, formData.clientFile, {
-      baseURL: "",
-      headers: { "Content-Type": formData.clientFile.type },
-    });
+      await api.put(presignedRes.uploadUrl, formData.clientFile, {
+        baseURL: "",
+        headers: { "Content-Type": formData.clientFile.type },
+      });
+
+      const response = await api.post("/api/sessions/users", {
+        clientFileKey: presignedRes.key,
+        sessionTitle: formData.sessionTitle,
+        client: formData.client,
+        context: formData.context,
+        deliverables: formData.deliverables,
+        emailType: formData.emailType,
+      });
+
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.add({ title: "Session successfully created!", type: "success" });
+      queryClient.invalidateQueries();
+    },
+    onError: (error: any) => {
+      toast.add({ title: error.message || "Submission failed", type: "error" });
+    },
+  });
+
+  const onSubmit = (formData: SessionInput) => {
+    createSessionMutation.mutate(formData);
   };
 
   // PATCH data
@@ -244,7 +264,7 @@ const NewSession = () => {
       queryClient.invalidateQueries();
     },
   });
-  
+
   // DELETE data
   const deleteSessionData = useMutation({
     mutationFn: async (sessionId: string) => {
@@ -297,7 +317,7 @@ const NewSession = () => {
               <span className="text-[#0D1624]">-</span>
               {/* 1. File Input */}
               <div className="border border-dashed rounded-2xl hover:border-[#00B2F9] transition-all duration-300 ease-in-out flex flex-col justify-center">
-                  <FieldSet>
+                <FieldSet>
                   <FieldGroup>
                     <Input
                       onChange={handleFileInput}
@@ -542,10 +562,12 @@ const NewSession = () => {
                   </Button>
                 </Link>
                 <Button
-                  onClick={() => {toast.add({
-                    title: "From submitted successfully!",
-                    type: "success"
-                  })}}
+                  onClick={() => {
+                    toast.add({
+                      title: "From submitted successfully!",
+                      type: "success",
+                    });
+                  }}
                   className="bg-[#00B2F9] text-black p-5 w-[85%] hover:scale-105 hover:bg-[#00B2F9]/80 hover:transition-all hover:duration-300 hover:cursor-pointer"
                   type="submit"
                 >
