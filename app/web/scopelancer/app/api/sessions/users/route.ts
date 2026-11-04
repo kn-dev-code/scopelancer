@@ -3,10 +3,7 @@ import { auth, prisma } from "@/lib/betterauth/auth";
 import { headers } from "next/headers";
 import { HTTP_STATUS } from "@/lib/error_codes/error-code";
 import { sessionAuth } from "@/lib/session-auth-check/session-auth";
-import {
-  sessionApiInput,
-  sessionApiSchema,
-} from "@/app/external_server/aws-actions";
+import { sessionApiSchema } from "@/lib/audio/audio";
 
 // GET /api/sessions/users
 export async function GET(request: NextRequest) {
