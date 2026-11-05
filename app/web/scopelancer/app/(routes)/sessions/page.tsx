@@ -66,10 +66,8 @@ const Session = () => {
   // post session data
 
   // patch session data
-  
 
   // delete session data
-  
 
   // Handlers
 

@@ -30,10 +30,12 @@ export async function GET(request: NextRequest) {
       { status: HTTP_STATUS.OK },
     );
   } catch (e) {
-    return NextResponse.json({
-      message: `Internal Server Error: ${e}`
-    },
-      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR })
+    return NextResponse.json(
+      {
+        message: `Internal Server Error: ${e}`,
+      },
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
+    );
   }
 }
 
