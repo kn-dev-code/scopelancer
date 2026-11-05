@@ -7,28 +7,34 @@ import { sessionApiSchema } from "@/lib/audio/audio";
 
 // GET /api/sessions/users
 export async function GET(request: NextRequest) {
-  const session = await sessionAuth();
+  try {
+    const session = await sessionAuth();
 
-  if (!session) {
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: HTTP_STATUS.UNAUTHORIZED },
+      );
+    }
+
+    const getSessions = await prisma.appSession.findMany();
+
+    if (!getSessions) {
+      return NextResponse.json(
+        { error: "Not Found" },
+        { status: HTTP_STATUS.NOT_FOUND },
+      );
+    }
     return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: HTTP_STATUS.UNAUTHORIZED },
+      { message: "Sessions retrieved successfully", sessions: getSessions },
+      { status: HTTP_STATUS.OK },
     );
+  } catch (e) {
+    return NextResponse.json({
+      message: `Internal Server Error: ${e}`
+    },
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR })
   }
-
-  const getSessions = await prisma.appSession.findMany();
-
-  if (!getSessions) {
-    return NextResponse.json(
-      { error: "Not Found" },
-      { status: HTTP_STATUS.NOT_FOUND },
-    );
-  }
-
-  return NextResponse.json(
-    { message: "Sessions retrieved successfully", sessions: getSessions },
-    { status: HTTP_STATUS.OK },
-  );
 }
 
 // POST /api/sessions/users

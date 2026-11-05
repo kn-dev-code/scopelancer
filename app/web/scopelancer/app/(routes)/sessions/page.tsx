@@ -62,76 +62,32 @@ const Session = () => {
   };
 
   // get session data
-  const {
-    data: sessionData,
-    error,
-    isLoading,
-  } = useQuery({
-    queryKey: ["sessions"],
-    queryFn: async () => {
-      const { data } = await api.get("/api/sessions/users");
-      return data.sessions;
-    },
-  });
 
   // post session data
-  const postSessionData = useMutation({
-    mutationFn: async (newSessionData: SessionType) => {
-      const { data } = await api.post("/api/sessions/users", newSessionData);
-      return data.session;
-    },
-  });
+
   // patch session data
-  const patchSessionData = useMutation({
-    mutationFn: async ({
-      id,
-      data,
-    }: {
-      id: string;
-      data: UpdatedSessionType;
-    }) => {
-      const { data: resData } = await api.patch(
-        `/api/sessions/users/${id}`,
-        data,
-      );
-      return resData;
-    },
-    onSuccess: () => {
-      (toast.add({
-        title: "Session updated successfully",
-        type: "success",
-      }),
-        queryClient.invalidateQueries({ queryKey: ["sessions"] }));
-    },
-  });
+  
 
   // delete session data
-  const deleteSessionData = useMutation({
-    mutationFn: async (id: string) => {
-      const { data: resData } = await api.delete(`/api/sessions/users/${id}`);
-      return resData;
-    },
-    onSuccess: () => {
-      (toast.add({
-        title: "Session deleted successfully",
-        type: "success",
-      }),
-        queryClient.invalidateQueries({ queryKey: ["sessions"] }));
-    },
-  });
+  
 
+  // Handlers
+
+  /*
   const handleUpdate = (sessionId: string, formData: UpdatedSessionType) => {
     patchSessionData.mutate({ id: sessionId, data: formData });
   };
-
+*/
   const handleAddingSession = () => {
     setAddingSession(true);
     router.push("/new-session");
   };
 
+  /* 
   const onSubmit = (formData: SessionType) => {
     postSessionData.mutate(formData);
   };
+  */
 
   return (
     <>
