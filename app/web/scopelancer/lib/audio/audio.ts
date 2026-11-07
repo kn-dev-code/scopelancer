@@ -2,7 +2,7 @@ import { z } from "zod";
 import { Deliverables, EmailType } from "@/lib/generated/client";
 
 const ACCEPTED_AUDIO_TYPES = [
-  "audio/mp4",
+  "video/mp4",
   "audio/mp3",
   "audio/m4a",
   "audio/wav",

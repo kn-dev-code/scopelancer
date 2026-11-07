@@ -29,12 +29,15 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/lib/axios/api";
 import { getPresignedUrl } from "@/app/external_server/aws-actions";
+import { useRouter } from "next/navigation";
 
 const NewSession = () => {
   const t = useTranslations();
   const [file, setFile] = useState<File | null>(null);
   const [audioDuration, setAudioDuration] = useState<number>(0);
   const [tools, setTools] = useState<string[]>(["transcribe"]);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const emailTone = [
     {
@@ -207,12 +210,14 @@ const NewSession = () => {
         fileSize: formData.clientFile.size,
       });
 
+      console.log("PRESIGNED RESPONSE FROM SERVER:", presignedRes);
+
       if (
         !presignedRes.success ||
         !presignedRes.uploadUrl ||
         !presignedRes.key
       ) {
-        throw new Error("Failed to authorize upload");
+        throw new Error("Upload url not authorized.");
       }
 
       await api.put(presignedRes.uploadUrl, formData.clientFile, {
@@ -220,16 +225,25 @@ const NewSession = () => {
         headers: { "Content-Type": formData.clientFile.type },
       });
 
-      const response = await api.post("/api/sessions/users", {
+      const sessionPayload = {
         clientFileKey: presignedRes.key,
         sessionTitle: formData.sessionTitle,
         client: formData.client,
         context: formData.context,
         deliverables: formData.deliverables,
         emailType: formData.emailType,
-      });
+      };
 
-      return response.data;
+      const backendResponse = await api.post(
+        "/api/sessions/users",
+        sessionPayload,
+      );
+      const llmResponse = await api.post(
+        "/file/file-conversion",
+        sessionPayload,
+      );
+
+      return { dbData: backendResponse.data, llmData: llmResponse.data };
     },
     onSuccess: () => {
       toast.add({ title: "Session successfully created!", type: "success" });
@@ -242,6 +256,13 @@ const NewSession = () => {
 
   const onSubmit = (formData: SessionInput) => {
     createSessionMutation.mutate(formData);
+  };
+
+  const handleClick = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      router.push("/model");
+    }, 7000);
   };
 
   // PATCH data
@@ -562,17 +583,14 @@ const NewSession = () => {
                   </Button>
                 </Link>
                 <Button
-                  onClick={() => {
-                    toast.add({
-                      title: "From submitted successfully!",
-                      type: "success",
-                    });
-                  }}
                   className="bg-[#00B2F9] text-black p-5 w-[85%] hover:scale-105 hover:bg-[#00B2F9]/80 hover:transition-all hover:duration-300 hover:cursor-pointer"
                   type="submit"
+                  onClick={handleClick}
                 >
                   <Sparkles />
-                  {t("newSession.startSession")}
+                  {isLoading
+                    ? "Awaiting Model...."
+                    : t("newSession.startSession")}
                 </Button>
               </div>
             </div>
