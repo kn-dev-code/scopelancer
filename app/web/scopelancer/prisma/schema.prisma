@@ -113,7 +113,7 @@ model Verification {
 /// Your Custom Application Work Session Model (Renamed from Session)
 model AppSession {
   id           String         @id @default(cuid())
-  clientFile   String
+  clientFileKey   String
   client       String
   sessionTitle String
   context      String?

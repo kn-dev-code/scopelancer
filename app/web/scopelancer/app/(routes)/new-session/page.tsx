@@ -35,7 +35,7 @@ const NewSession = () => {
   const t = useTranslations();
   const [file, setFile] = useState<File | null>(null);
   const [audioDuration, setAudioDuration] = useState<number>(0);
-  const [tools, setTools] = useState<string[]>(["transcribe"]);
+  const [tools, setTools] = useState<string[]>(["TRANSCRIBE"]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -59,16 +59,16 @@ const NewSession = () => {
   ];
 
   const LLMToolCost = {
-    transcribe: {
+    TRANSCRIBE: {
       costperMinute: 0.2,
     },
-    "scope-document": {
+    SCOPEDOCUMENT: {
       baseCost: 0.1,
     },
-    "flow-diagram": {
+    FLOWDIAGRAM: {
       baseCost: 0.12,
     },
-    email: {
+    EMAIL: {
       baseCost: 0.08,
     },
   } as const;
@@ -82,17 +82,17 @@ const NewSession = () => {
   ) => {
     const audioDuration = Math.ceil(audioDurationSeconds / 60);
     let cost = 0;
-    if (selectedTools.includes("transcribe")) {
-      cost += audioDuration * LLMToolCost["transcribe"].costperMinute;
+    if (selectedTools.includes("TRANSCRIBE")) {
+      cost += audioDuration * LLMToolCost["TRANSCRIBE"].costperMinute;
     }
-    if (selectedTools.includes("scope-document")) {
-      cost += LLMToolCost["scope-document"].baseCost;
+    if (selectedTools.includes("SCOPEDOCUMENT")) {
+      cost += LLMToolCost["SCOPEDOCUMENT"].baseCost;
     }
-    if (selectedTools.includes("flow-diagram")) {
-      cost += LLMToolCost["flow-diagram"].baseCost;
+    if (selectedTools.includes("FLOWDIAGRAM")) {
+      cost += LLMToolCost["FLOWDIAGRAM"].baseCost;
     }
-    if (selectedTools.includes("email")) {
-      cost += LLMToolCost["email"].baseCost;
+    if (selectedTools.includes("EMAIL")) {
+      cost += LLMToolCost["EMAIL"].baseCost;
     }
 
     return Number(cost.toFixed(2));
@@ -183,6 +183,8 @@ const NewSession = () => {
     deliverables: z.array(z.string()).min(1, "Select at least one deliverable"),
     emailType: z.enum(["Professional", "Friendly", "Direct"]).optional(),
   });
+  const fastapiBaseUrl =
+    process.env.NEXT_PUBLIC_FASTAPI_BASE_URL || "http://localhost:8000";
 
   type SessionInput = z.infer<typeof sessionSchema>;
 
@@ -198,7 +200,7 @@ const NewSession = () => {
       sessionTitle: "",
       client: "",
       context: "",
-      deliverables: ["transcribe"],
+      deliverables: ["TRANSCRIBE"],
     },
   });
 
@@ -239,7 +241,7 @@ const NewSession = () => {
         sessionPayload,
       );
       const llmResponse = await api.post(
-        "/file/file-conversion",
+        `${fastapiBaseUrl}/file/file-conversion`,
         sessionPayload,
       );
 
@@ -441,11 +443,11 @@ const NewSession = () => {
                   <div className="flex flex-row justify-center gap-x-4">
                     <Button
                       onClick={() => {
-                        toggleToolInput("transcribe");
+                        toggleToolInput("TRANSCRIBE");
                       }}
                       type="button"
                       className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${
-                        tools.includes("transcribe")
+                        tools.includes("TRANSCRIBE")
                           ? "bg-[#0E2539] border-[#00B2F9]"
                           : "border-[#202735] bg-[#0D1624]"
                       }`}
@@ -461,11 +463,11 @@ const NewSession = () => {
                     </Button>
                     <Button
                       onClick={() => {
-                        toggleToolInput("scope-document");
+                        toggleToolInput("SCOPEDOCUMENT");
                       }}
                       type="button"
                       className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${
-                        tools.includes("scope-document")
+                        tools.includes("SCOPEDOCUMENT")
                           ? "bg-[#0E2539] border-[#00B2F9]"
                           : "border-[#202735] bg-[#0D1624]"
                       }`}
@@ -491,11 +493,11 @@ const NewSession = () => {
                   <div className="flex flex-row justify-center gap-x-4">
                     <Button
                       onClick={() => {
-                        toggleToolInput("flow-diagram");
+                        toggleToolInput("FLOWDIAGRAM");
                       }}
                       type="button"
                       className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${
-                        tools.includes("flow-diagram")
+                        tools.includes("FLOWDIAGRAM")
                           ? "bg-[#0E2539] border-[#00B2F9]"
                           : "border-[#202735] bg-[#0D1624]"
                       }`}
@@ -511,11 +513,11 @@ const NewSession = () => {
                     </Button>
                     <Button
                       onClick={() => {
-                        toggleToolInput("email");
+                        toggleToolInput("EMAIL");
                       }}
                       type="button"
                       className={`border border-[#202735] bg-[#0D1624] p-9 w-[45%] hover:border hover:border-[#00B2F9] hover:bg-[#0D1624] active:cursor-pointer active:bg-[#0E2539] ${
-                        tools.includes("email")
+                        tools.includes("EMAIL")
                           ? "bg-[#0E2539] border-[#00B2F9]"
                           : "border-[#202735] bg-[#0D1624]"
                       }`}

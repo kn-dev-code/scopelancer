@@ -1,0 +1,17 @@
+# Virtual environment & Python cache
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Local configuration & secrets
+.env
+.env.local
+
+# Git & documentation
+.git
+.gitignore
+README.md

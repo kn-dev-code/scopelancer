@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     const newSession = await prisma.appSession.create({
       data: {
         userId: session.user.id,
-        clientFile: validation.clientFileKey,
+        clientFileKey: validation.clientFileKey,
         client: validation.client,
         sessionTitle: validation.sessionTitle,
         context: validation.context,

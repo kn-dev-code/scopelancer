@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  llm-agent:
+    build:
+      context: ./app/ai/src/llm-agent
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+    restart: always
