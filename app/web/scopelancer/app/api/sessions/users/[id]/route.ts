@@ -70,7 +70,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const updateSession = await prisma.appSession.update({
       where: { id, userId: session.user.id },
       data: {
-        clientFile: clientFile,
+        clientFileKey: clientFile,
         client: client,
         sessionTitle: sessionTitle,
         context: context,
@@ -78,7 +78,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         emailType: emailType,
       },
       select: {
-        clientFile: true,
+        clientFileKey: true,
         client: true,
         sessionTitle: true,
         context: true,
