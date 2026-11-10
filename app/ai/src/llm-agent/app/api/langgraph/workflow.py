@@ -1,9 +1,10 @@
-from app.api.langgraph.state import GraphState
+from app.api.langgraph.state import State
 from langgraph.graph import StateGraph, START, END
-from app.api.langgraph import State
 from app.api.langgraph.node import (transcribe, email, flow, scope)
 from langgraph.checkpoint.memory import MemorySaver
-builder = StateGraph(GraphState)
+
+
+builder = StateGraph(State)
 
 builder.add_node("transcribe", transcribe)
 builder.add_node("scope-document", scope)

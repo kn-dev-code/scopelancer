@@ -4,7 +4,7 @@ from sqlmodel import Session, select
 from app.core.database import get_db
 from app.models.file_model import FileModel, ProcessingDeliverables
 from app.models.user_model import User
-from app.api.langgraph import langgraph_app
+from app.api.langgraph.workflow import langgraph_app
 from langgraph.types import Command
 
 async def file_service_controller(session_id: str, request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> ProcessingDeliverables:
@@ -17,10 +17,10 @@ async def file_service_controller(session_id: str, request: Request, current_use
             status_code = status.HTTP_404_NOT_FOUND,
             details = "File or session not found"
         )
-
+        
         file_state = {
             "session_id": file.id,
-            "clientFile": file.clientFile,
+            "clientFileKey": file.clientFileKey,
             "client": file.client,
             "sessionTitle": file.sessionTitle,
             "context": file.context,
@@ -43,7 +43,7 @@ async def file_service_controller(session_id: str, request: Request, current_use
         deliverable_record = ProcessingDeliverables(
             thread_id = file.id,
             user_id = current_user.id,
-            file_path = file.clientFile,
+            file_path = file.clientFileKey,
             transcription = final_state.get("transcribe"),
             scope_document = final_state.get("scope_document"),
             flow_diagram = final_state.get("flow_diagram"),
@@ -54,7 +54,6 @@ async def file_service_controller(session_id: str, request: Request, current_use
         await db.commit()
         await db.refresh(deliverable_record)
         return deliverable_record
-        # Work on pushing the final_state to the selected processing session
     except HTTPException:
         raise
     except Exception as e:

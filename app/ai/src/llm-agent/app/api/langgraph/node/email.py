@@ -1,8 +1,8 @@
 from langchain_core.messages import SystemMessage, HumanMessage
 from app.core.llms import haiku_email_llm
 from langgraph.messages.system_prompts import email_system_prompt
-from langgraph.types import interrupt, Command
-from state import State
+from langgraph.types import interrupt
+from app.api.langgraph.state import State
 
 async def email(state: State) -> dict:
     audio_file = state.get("transcribe")

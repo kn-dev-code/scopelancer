@@ -4,7 +4,7 @@ from typing import TypedDict, Optional, List
 
 class State(TypedDict):
     session_id: str
-    clientFile: str
+    clientFileKey: str
     client: str
     sessionTitle: str
     context: str

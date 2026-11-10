@@ -1,4 +1,4 @@
-from state import State
+from app.api.langgraph.state import State
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -12,7 +12,7 @@ if not whisper_model_key:
 
 
 def transcribe_file(state: State) -> dict:
-    audio_file = state.get("clientFile")
+    audio_file = state.get("clientFileKey")
     if not audio_file or audio_file.isspace():
         raise ValueError("Cannot have an empty audio_path")
     

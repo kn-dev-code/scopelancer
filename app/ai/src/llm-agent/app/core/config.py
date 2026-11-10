@@ -8,8 +8,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str
 
     # LLM Keys
-    ANTHROPIC_API_KEY: str
-    GROQ_WHISPER_API_KEY: str
+    #ANTHROPIC_API_KEY: str
+    #GROQ_WHISPER_API_KEY: str
 
     # Docker/Postgres Keys
     POSTGRES_USER: str
@@ -19,9 +19,9 @@ class Settings(BaseSettings):
     DB_NAME: str
 
     # LangGraph Keys
-    LANGGRAPH_API_KEY: str
-    LANGSMITH_TRACING: bool
-    LANGSMITH_ENDPOINT: str
+    #LANGGRAPH_API_KEY: str
+    #LANGSMITH_TRACING: bool
+    #LANGSMITH_ENDPOINT: str
 
     # Env Specifics
     class Config:
